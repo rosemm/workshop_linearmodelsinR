@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 # Intro to R sequence
 ## Welcome to the wonderful world of R
 * What is R and what is it good for?
@@ -14,8 +17,11 @@
   * JASP
   * SPSS
   * SAS
+* The stucture of R: base + packages
   
 ## Getting your data into R
+* working directory
+  * getwd(), setwd()
 * popular data formats
   * text files (.txt, .csv, .dta)
   * SPSS files (.sav)
@@ -31,6 +37,18 @@
   * the .Rdata format
   * saving the entire workspace
 
+## Fall in love with dataframes
+* a different mindset: how to "see" your data when you don't have a spreadsheet
+* str()
+* nrow(), ncol()
+* numeric variables
+* character variables
+* factor variables, see [http://stat545-ubc.github.io/block014_factors.html](http://stat545-ubc.github.io/block014_factors.html)
+  * levels(), contrasts()
+  * reorder()
+  * revalue()
+  * group_by()
+  
 ## Reformatting data in R
 * adding columns
 * using multiple dataframes
@@ -43,8 +61,7 @@
 * plot()
 * basic relationships (correlations, scatterplots)
 * the importance of a sanity check
-
-## Data visualization with ggplot2
+* plotting with ggplot2
 
 ## The general linear model in R
 * lm()
@@ -62,6 +79,9 @@
 ## Interactions
 * Interpreting interactions from coefficients
 * Plotting interactions
+  * cont by cont
+  * cont by cat
+  * 3-way
 
 ## Mediation in R
 * Baron & Kenny
@@ -83,6 +103,29 @@
   * conduct a power analysis
   * test a hypothesis
   * make art :)
+
+## Presenting R results
+* saving plots
+* exporting tables and model summaries
+  * knitr, xtable
+* writing dynamic documents
+
+```{r, results='asis'}
+lm0 <- lm(hp ~ wt, mtcars)
+lm1 <- lm(qsec ~ hp, mtcars)
+lm2 <- lm(qsec ~ wt, mtcars)
+library(memisc)
+mtable123 <- mtable('Model 1' = lm0,
+            'Model 2' = lm1,
+            'Model 3' = lm2,
+            summary.stats = c('R-squared','F','p','N'))
+#pander(mtable123)
+print(mtable123)
+
+library(xtable)
+print(xtable(summary(lm0)),type='html')
+```
+
 
 # Advanced R: Stand-alone topics
 These short courses all assume some basic familiarity with R, as well as familiarity with the statistical method in question. 
