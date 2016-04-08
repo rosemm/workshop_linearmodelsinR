@@ -1,0 +1,10 @@
+* systematic visual cues for:
+  * reminder / review
+  * extra treat / alternative approach
+  * particular packages
+    * ggplot2
+    * dplyr, tidyr
+    * knitr
+    
+"Implicit contract with the computer / scripting language: Computer will do tedious computation for you. In return, you will be completely precise in your instructions. Typos matter. Case matters. Get better at typing." from http://stat545-ubc.github.io/block002_hello-r-workspace-wd-project.html
+
