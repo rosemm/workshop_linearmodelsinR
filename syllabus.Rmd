@@ -62,7 +62,7 @@ output: word_document
 * basic relationships (correlations, scatterplots)
 * the importance of a sanity check
 * plotting with ggplot2 [tutorial](http://stat545-ubc.github.io/cm005_ggplot2-intro.html)
-* [tons and tons of examples](http://shiny.stat.ubc.ca/r-graph-catalog/)
+* [tons](http://shiny.stat.ubc.ca/r-graph-catalog/) and [tons](http://shinyapps.org/apps/RGraphCompendium/index.php) of examples
 
 ## The general linear model in R
 * lm()
