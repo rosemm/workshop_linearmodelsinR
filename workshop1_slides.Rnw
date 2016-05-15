@@ -972,7 +972,7 @@ Do you have your own data? Try reading it into R.
 % -------------------------------------------------------------
 
 \section{Data wrangling}
-\subsection{dplyr}
+\subsection{dplyr and tidyr}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[ 
@@ -1037,52 +1037,261 @@ It's mostly made up of functions that work like "verbs" for modifying your data.
 Also, you also have the option to use pipes if you want, to make your data cleaning steps easier to read (and write).
 
 \learnmore{Here's an introduction to dplyr (with lots of examples!) by Hadley Wickham himself \url{https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html}}
+
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{dplyr}
+
 <<>>=
 install.packages("dplyr", "tidyr")
 library("dplyr")
 library("tidyr")
 help(package="dplyr")
 @
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{dplyr}
-
+Tons of functions!
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+Take some rows from the data frame, according to some rule. \\
+For example, let's get all of the Asian countries from gapminder.
+<<>>=
+?filter
+@
+\pause
+<<>>=
+gapminder.asia <- filter(gapminder, continent=="Asia")
+@
+\keyidea{To test for equality (are these two things the same?), you need to use ==}
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+\hwydt{Just pull out the cases with less than average life expectancy}
+\pause
+<<>>=
+filter(gapminder, lifeExp < mean(lifeExp))
+@
+\keyidea{You can use $>, <, >=, <=$ to express inequalities}
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+\hwydt{Just pull out the cases in the Americas with less than average life expectancy}
+Hint: Look at the help documentation for dplyr::filter
+\pause
+<<>>=
+filter(gapminder, lifeExp < mean(lifeExp) & continent == "Americas")
+@
+\keyidea{You can use \& to specify two (or more) logical tests that all need to be met.}
+
+\seealso{base::subset()}
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+\hwydt{Just pull out the cases with particularly low (less than 40) or particularly high (greater than 75) life expectancies.}
+\pause
+<<>>=
+filter(gapminder, lifeExp < 40 | lifeExp > 75)
+@
+\keyidea{You can use $|$ to specify "or" logical tests, where any of them can be met.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+Selecting some of the columns.
+<<select>>=
+select(gapminder, country, continent, year, lifeExp)
+@
+
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{tidyr}
+\setbeamercovered{invisible}
+Converting between long and wide formats.
+Use spread() to go wide, and gather() to go long.\\
+Let's say we want each row to just be one year and have each country be a column, so we can look at the life expectancy data in wide format.
+<<>>=
+gapminder.lifeExp <- select(gapminder, 
+                            country,  
+                            year, 
+                            lifeExp)
+wide <- spread(gapminder.lifeExp, key=country, lifeExp)
+wide
+@
+
+\seealso{reshape2::melt and reshape2::cast}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{tidyr}
+\setbeamercovered{invisible}
+Converting between long and wide formats.
+Use spread() to go wide, and gather() to go long.\\
+Now let's bring it back to long format.
+<<>>=
+long <- gather(wide, 
+               key="country", 
+               value="lifeExp", 
+               Afghanistan:Zimbabwe)
+long
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{tidyr}
+<< tidyr >>=
+help(package="tidyr")
+@
+Tons of great stuff!
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+But we can do this much more neatly (without creating a lot of temporary objects) by using pipes. 
+<< pipes >>=
+gapminder %>% 
+  select(country, year, lifeExp) %>% 
+  spread(key=country, lifeExp)
+@
+
+\keyidea{A pipe sends the output of one function to be the first argument in the next function.}
+\keyidea{When you use pipes, you omit the first argument of the function after the pipe.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+Doing things to each of the levels of a factor in a data frame.\\
+For example, maybe you want the mean population for each country, collapsing across years.
+<<>>=
+gapminder %>% 
+  group_by(country)
+@
+\pause
+<<>>=
+gapminder %>% 
+  group_by(country) %>% 
+  summarize(mean.pop=mean(pop))
+@
+
+\seealso{base::by() and psych::describeBy()}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+\hwydt{\\ Get the min and max GDP per capita for each continent}
+\pause
+<< group_by >>=
+gapminder %>% 
+  group_by(continent) %>% 
+  summarize(min.gpd=min(gdpPercap), max.gpd=max(gdpPercap))
+@
+\pause
+\wwtd{\\ If you ran summarize() without grouping first}
+<<>>=
+gapminder %>% 
+  summarize(min.gpd=min(gdpPercap), max.gpd=max(gdpPercap))
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+Combining data frames: join operations.
+<<>>=
+?join
+@
+left\_join keeps all of the rows in whichever dataframe you list first, and will supplement it with columns from the second dataframe.
+\pause
+<<>>=
+cont.means <- gapminder %>% 
+  group_by(continent, year) %>% 
+  summarize(cont.gdpPercap=mean(gdpPercap))
+gapminder %>% 
+  left_join(cont.means, by=c("continent", "year"))
+@
+
+\seealso{base::merge()}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+\setbeamercovered{invisible}
+Add new calculated columns.
+<<>>=
+gapminder %>% 
+  mutate(pop.diff=pop - mean(pop), pop.sd=sd(pop), pop.Z=pop.diff/pop.sd)
+@
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section}
 
+\keyidea{To test for equality (are these two things the same?), you need to use ==}
+\keyidea{You can use $>, <, >=, <=$ to express inequalities}
+\keyidea{You can use \& to specify two (or more) logical tests that all need to be met.}
+\keyidea{You can use $|$ to specify "or" logical tests, where any of them can be met.}
+\keyidea{A pipe sends the output of one function to be the first argument in the next function.}
+\keyidea{When you use pipes, you omit the first argument of the function after the pipe.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+\setbeamercovered{invisible}
+\hwydt{\\ For each country at each year, calculate its difference in population from its continent's average population during that year.}
+\pause
+<<>>=
+cont.means <- gapminder %>% 
+  group_by(continent, year) %>% 
+  summarize(cont.pop=mean(pop))
+  
+gapminder %>% 
+  left_join(cont.means, by=c("continent", "year")) %>% 
+  mutate(diff.pop=pop-cont.pop)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+\setbeamercovered{invisible}
+\hwydt{\\ Get the average life expectancy and population over the last 10 years of the data (1997-2007) for each continent.}
+\pause
+<<>>=
+gapminder %>% 
+  filter(year >= 1997) %>% 
+  group_by(continent) %>% 
+  summarize(mean(lifeExp), mean(pop))
+@
 
 \end{frame}
 % -------------------------------------------------------------
 
 
+\section{Plotting}
+\subsection{ggplot2}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[ 
@@ -1093,57 +1302,37 @@ help(package="dplyr")
     ] 
 \end{frame}
 % -------------------------------------------------------------
-
-
-
 % -------------------------------------------------------------
-\begin{frame}[fragile]{How to interpret p-values like a Bayesian}
-
-<<pval-demonstration-plot, echo=FALSE, out.height='.9\\textheight', out.width='.8\\linewidth'>>=
-powers_to_try <- c(.1, .3, .5, .7, .9) # the shape of that curve depends on the power of your experiment
-
-plot.data <- data.frame(alpha=.05, 
-                        power_level=gl(k=15, n=length(powers_to_try), labels=c(powers_to_try)), 
-                        p_null=seq(from=0, to=1, length.out=15))
-
-plot.data$power <- as.numeric(as.character(plot.data$power_level)) # making a numeric version of the power factor, to use in the calculations below                       
-plot.data$p_sig <- with(plot.data, alpha*p_null + (power)*(1-p_null))
-plot.data$p_null_given_sig <- with(plot.data, (alpha*p_null)/p_sig)
-
+\begin{frame}[fragile]{Plotting in R}
+Lots of options for plotting in R. 
+We've already seen some examples of the base R plotting functions, and they work great. 
+The ggplot2 package is different because it's specifically designed with data exploration in mind --- not just what plots you'll need to draw, but what questions you'll need to answer about your data.\\
+\bigskip
+When might you want to use base plotting, and when might ggplot2 be better?
+\end{frame}
+\pause
+<<ggplot2>>=
+install.packages("ggplot2")
 library("ggplot2")
-ggplot(plot.data, aes(x=p_null, y=(1-p_null_given_sig), color=power_level)) + 
-  geom_line(size=1.5) +
-  xlab("Probability of the null") +
-  ylab(NULL) +
-  ggtitle("What's the probabilty the null is false,\ngiven a significant result?")
+?ggplot
 @
+
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+ggolot2 works in layers. The first thing you do is set up the variables you want to plot in ggplot(), then you add layers for the plots you want to draw.
+<<>>=
+ggplot(gapminder, aes(x=year, y=pop))
+@
+\keyidea{ggplot() and aes() set up what data will get plotted. Then you tell it how to plot with geoms.}
 
 \end{frame}
 % -------------------------------------------------------------
 
-
-\subsection{Probability distributions}
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Overview}
-\tableofcontents[ 
-    currentsubsection, 
-    hideothersubsections, 
-    sectionstyle=show/shaded, 
-    subsectionstyle=show/shaded, 
-    ] 
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Describing probability with functions}
+\begin{frame}[fragile]{Key ideas from this section}
 
-Probability mass functions (PMF) are for discrete variables, which take a finite number of values. Probability density functions (PDF) are for continuous variables, which can take infinitely many values.
-
-<<pmf-plot, fig.width=5, fig.height=5, out.width='.45\\linewidth', echo=FALSE, fig.show='hold'>>=
-cat <- rpois(100, 2) # drawing 100 random values from a Poisson distribution
-cont <- rbeta(n=100, shape1=10, shape2=4) # drawing 100 random values from a beta distribution
-barplot(table(cat)/100, ylab="Probability Mass")
-plot(density(cont), main="", ylab="Probability Density", xlab="")
-@
+\keyidea{ggplot() and aes() set up what data will get plotted. Then you tell it how to plot with geoms.}
 
 \end{frame}
 % -------------------------------------------------------------
