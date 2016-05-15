@@ -5,4 +5,14 @@ Workshop_IntroR.Rproj
 *.docx
 *.html
 *.pdf
+*.png
+*.sav
 .DS_Store
+figure
+*.log
+*.nav
+*.snm
+*.gz
+*.tex
+*.toc
+*.vrb
