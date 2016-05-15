@@ -1,0 +1,901 @@
+\documentclass[l0pt]{beamer}
+
+\usetheme{Rochester}
+\usecolortheme{seagull}
+\setbeamercovered{transparent} % https://www.sharelatex.com/blog/2013/08/20/beamer-series-pt4.html
+
+\usepackage{color} % https://en.wikibooks.org/wiki/LaTeX/Colors#Predefined_colors
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\graphicspath{ {figure/}{images/} }
+
+\definecolor{keyidea_bk}{rgb}{0.74, 0.83, 0.9}
+\definecolor{keyidea_tx}{rgb}{0.0, 0.28, 0.67}
+\definecolor{seealso_bk}{rgb}{0.96, 0.73, 1.0}
+\definecolor{seealso_tx}{rgb}{0.38, 0.25, 0.32}
+\definecolor{learnmore_bk}{rgb}{0.52, 0.73, 0.4}
+\definecolor{learnmore_tx}{rgb}{0.0, 0.27, 0.13}
+\definecolor{wwtd_bk}{rgb}{0.98, 0.93, 0.37}
+\definecolor{wwtd_tx}{rgb}{1.0, 0.56, 0.0}
+\definecolor{hwydt_bk}{rgb}{1.0, 0.72, 0.77}
+\definecolor{hwydt_tx}{rgb}{0.79, 0.08, 0.48}
+
+% \definecolor{magenta(dye)}{rgb}{0.79, 0.08, 0.48}
+% \definecolor{maize}{rgb}{0.98, 0.93, 0.37}
+% \definecolor{portlandorange}{rgb}{1.0, 0.35, 0.21}
+% \definecolor{princetonorange}{rgb}{1.0, 0.56, 0.0}
+% \definecolor{fluorescentorange}{rgb}{1.0, 0.75, 0.0}
+% \definecolor{flame}{rgb}{0.89, 0.35, 0.13}
+% \definecolor{carminepink}{rgb}{0.92, 0.3, 0.26}
+% \definecolor{cherryblossompink}{rgb}{1.0, 0.72, 0.77}
+% \definecolor{forestgreen(traditional)}{rgb}{0.0, 0.27, 0.13}
+% \definecolor{electriclavender}{rgb}{0.96, 0.73, 1.0}
+% \definecolor{frenchlilac}{rgb}{0.53, 0.38, 0.56}
+% \definecolor{eggplant}{rgb}{0.38, 0.25, 0.32}
+% \definecolor{uclagold}{rgb}{1.0, 0.7, 0.0}
+% \definecolor{magicmint}{rgb}{0.67, 0.94, 0.82}
+% \definecolor{moonstoneblue}{rgb}{0.45, 0.66, 0.76}
+% \definecolor{non-photoblue}{rgb}{0.64, 0.87, 0.93}
+% \definecolor{oldmauve}{rgb}{0.4, 0.19, 0.28}
+% \definecolor{oldrose}{rgb}{0.75, 0.5, 0.51}
+% \definecolor{paleaqua}{rgb}{0.74, 0.83, 0.9}
+% \definecolor{pakistangreen}{rgb}{0.0, 0.4, 0.0}
+% \definecolor{parisgreen}{rgb}{0.31, 0.78, 0.47}
+% \definecolor{pastelgreen}{rgb}{0.47, 0.87, 0.47}
+% \definecolor{dollarbill}{rgb}{0.52, 0.73, 0.4}
+% \definecolor{pistachio}{rgb}{0.58, 0.77, 0.45}
+% \definecolor{portlandorange}{rgb}{1.0, 0.35, 0.21}
+% \definecolor{princetonorange}{rgb}{1.0, 0.56, 0.0}
+% \definecolor{sinopia}{rgb}{0.8, 0.25, 0.04}
+% \definecolor{sangria}{rgb}{0.57, 0.0, 0.04}
+% \definecolor{amber}{rgb}{1.0, 0.75, 0.0}
+% \definecolor{mikadoyellow}{rgb}{1.0, 0.77, 0.05}
+% \definecolor{lightgoldenrodyellow}{rgb}{0.98, 0.98, 0.82}
+	
+\newcommand*\keyidea[1]{
+\setbeamercovered{invisible}
+\pause
+  \begin{center}
+  \colorbox{keyidea_bk}{\parbox{0.9\textwidth}{{\color{keyidea_tx}\textbf{Key idea: }#1}}}
+  \end{center}
+}
+
+\newcommand*\seealso[1]{
+\setbeamercovered{invisible}
+\pause
+  \begin{center}
+  \colorbox{seealso_bk}{\parbox{0.9\textwidth}{{\color{seealso_tx}\textbf{See also: }#1}}}
+  \end{center}
+}
+
+\newcommand*\learnmore[1]{
+\setbeamercovered{invisible}
+\pause
+  \begin{center}
+  \colorbox{learnmore_bk}{\parbox{0.9\textwidth}{{\color{learnmore_tx}\textbf{Learn more: }#1}}}
+  \end{center}
+}
+
+\newcommand*\hwydt[1]{
+  \begin{center}
+  \colorbox{hwydt_bk}{\parbox{0.9\textwidth}{{\color{hwydt_tx}\textbf{How would you do this? }#1}}}
+  \end{center}
+}
+
+\newcommand*\wwtd[1]{
+  \begin{center}
+  \colorbox{wwtd_bk}{\parbox{0.9\textwidth}{{\color{wwtd_tx}\textbf{What will this do? }#1}}}
+  \end{center}
+}
+
+
+\begin{document}
+
+\title[R Workshop 1]{Intro to R}
+
+\date[15/05/2016]{May 15th, 2016}
+\author[R. Hartman]{Rose Hartman}
+\institute[CASE]{Office of the Vice President for Research and Innovation \\ Center for Assessment Statistics \& Evaluation}
+
+\maketitle
+
+<<setup, include=FALSE, echo=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALSE)
+@
+
+% very important to use option [fragile] for frames containing code output!
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Introduction}
+
+\begin{center}
+Hi, I'm Rose.
+\end{center}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{General R resources}
+
+\begin{itemize}
+  	\item<1-> swirl\\ \url{https://github.com/swirldev/swirl}
+  	\item<2-> R for cats\\ \url{http://rforcats.net/}
+		\item<3-> UCLA R materials\\ \url{http://www.ats.ucla.edu/stat/r/sk/}
+		\item<4-> Jenny Bryan's R class\\ \url{http://stat545.com/}
+		\item<5-> Advanced R by Hadley Wickham\\ \url{http://adv-r.had.co.nz/}
+    \item<6-> R Club!\\ \url{http:blogs.uoregon.edu/rclub}
+	\end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Welcome to the Wonderful World of R}
+
+\tableofcontents[]
+
+\end{frame}
+% -------------------------------------------------------------
+
+\section{R Basics}
+\subsection{Overview of R}
+\setbeamercovered{transparent}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{How does R compare to other ways of doing data analysis?}
+
+\begin{itemize}
+    \item<1-> 100\% scripts (100\% reproducible): data cleaning, transforming, analyzing, presenting, even writing and interpretation all in one place
+    \item<2-> free (open)
+    \item<3-> not a spreadsheet environment --- this changes the way you think about your data
+    \item<4-> handles pretty much anything you might want to do to your data (so no need to switch between environments), and is growing every day
+    \item<5-> modular (you can't download the whole thing once and be done)
+  \end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{How do you learn R?}
+
+\begin{itemize}
+    \item<2-> It's a language. You learn by using it!
+    \item<3-> My recommendation: \\ Figure out something you want to do in R (a real, live data problem you have) and work on that, rather than reading about it in the abstract. You won't learn R by having someone explain it to you, only by doing it yourself. Best case scenario: Find a bunch of problems to work on in R, and a group to work on them with, so you get experience with a broad range of applications.
+  \end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{This workshop}
+
+\begin{itemize}
+   \item<1-> Focus on common stumbling blocks for people who try to learn R on their own. I want to take down barriers, so you'll be well placed to continue practicing R back in your natural habitat. 
+    \item<2-> Lots of practice, and we'll return to key concepts several times. 
+    \item<3-> For those of you who are learning/psych geeks...
+    \begin{itemize}
+	    \item<4-> interleaved training and progressive alignment
+	    \item<5-> realistic practice problems from the two perspectives you're most likely to encounter in real life
+	    \item<6-> consistent color-coding of different types of information 
+	    \end{itemize}
+  \end{itemize}
+  
+<< notes_this-workshop, echo=FALSE>>=
+# I'm trying to maximize your ability to generalize what you learn here to new circumstances you'll encounter, so I'll be harnessing the power of interleaved training and progressive alignment. 
+# I'll ask you to tackle realistic practice problems from the two perspectives you'll most likely to encounter in real life: I have an idea in my head and I need to turn it into code, and I've got some code here and I need to figure out what it does.
+# You'll also notice consistent color-coding of different types of information throughout to help you allocate your attention in support of your learning goals, and to facilitate appropriate comparison across situations.
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{}
+
+Keep an eye out for...
+\pause
+\hwydt{}
+\pause
+\wwtd{}
+\learnmore{resources to check out}
+\keyidea{the big ideas you need to hold on to}
+\seealso{other functions or packages that do a similar thing}
+
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{R as a calculator}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Let's get started!}
+
+\begin{center}
+\includegraphics[width=\textwidth]{rstudio.png}
+\end{center}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Let's get started!}
+
+<<  >>=
+3 + 4
+112/2
+sqrt(5)
+@
+
+\keyidea{Functions look like do.something(to.this)}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Functions in R}
+
+<<  >>=
+sum(3, 4)
+log(1/2)
+sin(0)
+sin(1)
+sin(pi)
+?log
+@
+
+\keyidea{Pull up the help documentation for a function by ?its.name}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Creating objects in R}
+
+<<  >>=
+x <- 3
+x
+@
+
+\keyidea{If you save something as an object, you can get the value by just calling the object name.}
+
+\pause 
+
+<<  >>=
+x + 4
+y <- 4
+@
+Check out your environment in R Studio to see what objects you have currently. You can delete an object with rm(). For example:
+<<>>=
+rm(x)
+@
+\pause
+Let's make it again, so we can keep working with it.
+<<  >>=
+x <- 3
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Functions}
+
+\begin{quote}
+To understand computations in R, two slogans are helpful:\\
+Everything that exists is an object.\\
+Everything that happens is a function call.\\
+- John Chambers
+\end{quote}
+
+
+From \url{http://adv-r.had.co.nz/Functions.html}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Creating objects in R}
+
+\wwtd{}
+<<  >>=
+x + y
+@
+\pause
+Let's assign a value to x again.
+<<  >>=
+x <- 1
+@
+
+What is the value of x?
+\keyidea{When you reuse an object name, it overwrites the old object (with no warning!)}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Creating objects in R}
+
+<< >>=
+variablex<- 3
+variablex<-3
+variablex <-
+  3
+variable x <- 3
+@
+
+\keyidea{White space usually doesn't matter, except in the middle of a name}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Creating objects in R}
+
+You can name an object pretty much anything you want (as long as there's no white space).
+<<  >>=
+sqrt_5 <- sqrt(5)
+pi <- sqrt(5)
+@
+
+\keyidea{Actually, there are some names you can't use (they're reserved).}
+
+<<>>=
+favorite_phrase <- "woo hooo!"
+@
+\keyidea{Strings need to be surrounded by quotes. If there are no quotes around something, it's treated as a name.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{A note about what R needs from you}
+
+\begin{quote}
+Implicit contract with the computer / scripting language: Computer will do tedious computation for you. In return, you will be completely precise in your instructions. Typos matter. Case matters. Get better at typing. \\
+- Jenny Bryan
+\end{quote}
+
+
+From \url{http://stat545-ubc.github.io/block002_hello-r-workspace-wd-project.html}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Functions}
+\keyidea{Functions look like do.something(to.this)}
+\keyidea{Pull up the help documentation for a function by ?its.name}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Saving objects}
+
+\keyidea{If you save something as an object, you can get the value by just calling the object name.}
+\keyidea{When you reuse an object name, it overwrites the old object (with no warning!)}
+\keyidea{White space usually doesn't matter, except in the middle of a name}
+\keyidea{There are some names you can't use (they're reserved).}
+\keyidea{Strings need to be surrounded by quotes. If there are no quotes around something, it's treated as a name.}
+
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{Making and using vectors}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+<< eval=TRUE >>=
+x <- 1:10
+@
+
+\wwtd{}
+<<>>=
+x + 4
+@
+\keyidea{When you do something to a vector, usually R does it to each element of the vector.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+<<>>=
+x <- c(1,2,10)
+y <- c(3,5,7)
+@
+\wwtd{}
+<<>>=
+x + y
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+<<>>=
+seq(from=1, to=10, by=1)
+@
+\wwtd{}
+<<>>=
+seq(from=1, to=10, by=2)
+@
+
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+Try this:
+<<>>=
+seq(1, 10, by=1)
+seq(1, 10)
+@
+
+\wwtd{}
+
+<<>>=
+seq(10, 1)
+seq(5)
+@
+\keyidea{Some arguments in functions have defaults}
+\keyidea{You can (but don't have to) specify the names of arguments. I recommend doing it.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+\hwydt{Find out the defaults for seq()}
+\pause
+<<>>=
+?seq
+@
+\learnmore{Use ? when you know the exact name of the function you want, you just want to pull up the help documentation for it.}
+\learnmore{Use ?? when you think you've got a function for what you need, you just can't remember its exact name.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+\hwydt{\\ Generate this vector:  10, 20, 30, 40, 50}
+\pause
+<<>>=
+seq(from=10, to=50, by=10)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+Try this:
+<<>>=
+rep(3, times=1)
+@
+
+\wwtd{}
+<<>>=
+rep(favorite_phrase, 3)
+c(favorite_phrase, 1:5)
+@
+\pause
+<<>>=
+x <- c(favorite_phrase, 1:5)
+mode(x)
+@
+\keyidea{You can't combine different types of items in the same vector. If you try, R will coerce them to be the same.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{vectors}
+
+\hwydt{\\ Generate this vector: 10, 10, 20, 20, 30, 30 \\ Generate this vector: 10, 20, 30, 10, 20, 30}
+\pause
+<<>>=
+c(10, 10, 20, 20, 30, 30)
+c(10, 20, 30, 10, 20, 30)
+rep(seq(10, 30, by=10), times=2)
+rep(seq(10, 30, by=10), each=2)
+sort(rep(seq(10, 30, by=10), 2))
+@
+\keyidea{Applying functions sequentially. Send the output of one function as the input to the next.}
+\keyidea{There's more than one correct solution! That's usually the case.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section}
+
+\keyidea{When you do something to a vector, usually R does it to each element of the vector.}
+\keyidea{Some arguments in functions have defaults}
+\keyidea{You can (but don't have to) specify the names of arguments. I recommend doing it.}
+\keyidea{Applying functions sequentially. Send the output of one function as the input to the next.}
+\keyidea{There's more than one correct solution! That's usually the case.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Playing with vectors}
+
+\wwtd{}
+<<>>=
+log(seq(from=0, to=10, length.out=100))
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Playing with vectors}
+
+Try this:
+<<>>=
+cor(x,y)
+plot(y ~ x)
+@
+\hwydt{Find out the defaults for plot()}
+\wwtd{}
+<<>>=
+plot(x ~ y)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Playing with vectors}
+
+Try this:
+<<>>=
+rnorm(10)
+@
+
+\hwydt{Find out the defaults for rnorm()}
+\hwydt{\\ Generate one example of a random IQ score (mean of 100, standard deviation of 15).}
+\pause
+<<>>=
+rnorm(1, mean=100, sd=15)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Playing with vectors}
+
+\wwtd{}
+<<>>=
+hist(rnorm(100, mean=50, sd=5))
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{\\ Generate this plot (showing the value of sin from -5 to 5).}
+\begin{center}
+\includegraphics[width=.7\textwidth]{sinx.png}
+\end{center}
+\pause
+<<>>=
+x <- seq(from=-5, to=5, by=.1)
+plot(sin(x) ~ x)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{Generate this plot (showing random scatter plot, random x and random y)}
+\begin{center}
+\includegraphics[width=.65\textwidth]{scatternull.png}
+\end{center}
+\pause
+<<>>=
+plot(rnorm(100) ~ rnorm(100), xlab="Predictor", ylab="Outcome", 
+     main="My lovely null results")
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{Upgrading from vectors to data frames!}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+Try this:
+<<>>=
+x <- data.frame(id=1:10, scores = rnorm(10))
+x
+str(x)
+@
+\keyidea{Use str(something) to learn about its structure.}
+\pause
+<<>>=
+head(x)
+tail(x)
+View(x)
+@
+\keyidea{Use head(), tail() and View() to peak at a data frame.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+
+<<>>=
+conditions <- rep(c("condition 1", "condition 2", "condition 3"), 
+                  each=5)
+@
+
+\seealso{gl() for generating levels of a categorical variable}
+
+<<>>=
+scores <- runif(15, min=1, max=10)
+@
+
+\hwydt{\\ Learn about a function you don't recognize: runif()}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+
+<<>>=
+my_data <- data.frame(conditions, scores)
+str(my_data)
+@
+\keyidea{You can combine different types of variables in the same data frame.}
+\pause
+Try this:
+<<>>=
+my_data$scores
+@
+\keyidea{Each column in a data frame is a vector.}
+\keyidea{You can refer to one column within a data frame with \$, like dataframe\$columnname.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+\setbeamercovered{transparent}
+Some important things to know about dataframes in R:
+\begin{itemize}
+  \item<1->Common types of variables: numeric, factor, character, and logical
+  \item<2->Dataframes must be rectangular (all columns must have the same number of elements).
+  \item<3->Columns have names (i.e. variable names)
+  \item<4->Dataframes, like other R objects, can have additional attributes. You can use this to store additional metadata about variables, etc.
+\end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+\setbeamercovered{transparent}
+Some important things to know about dataframes in R:
+\begin{itemize}
+  \item<1->Common types of variables: numeric, factor, character, and logical
+  \item<2->Dataframes must be rectangular (all columns must have the same number of elements).
+  \item<3->Columns have names (i.e. variable names)
+  \item<4->Dataframes, like other R objects, can have additional attributes. You can use this to store additional metadata about variables, etc.
+\end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+
+There are a bunch of data sets built-in to R:
+<<>>=
+head(iris)
+str(iris)
+data()
+colnames(iris)
+summary(iris)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section}
+
+\keyidea{Use str(something) to learn about its structure.}
+\keyidea{Use head(), tail() and View() to peak at a data frame.}
+\keyidea{You can combine different types of variables in the same data frame.}
+\keyidea{Each column in a data frame is a vector.}
+\keyidea{You can refer to one column within a data frame with \$, like dataframe\$columnname.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{\\ Generate this plot (plot showing condition on the x-axis and score on the y-axis from my\_data)}
+\begin{center}
+\includegraphics[width=.6\textwidth]{boxplot.png}
+\end{center}
+\pause
+<<>>=
+plot(scores ~ conditions, data=my_data, xlab=NULL, 
+     main="Some made-up data")
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Data frames}
+Let's take another look at that code:
+<<>>=
+plot(scores ~ conditions, data=my_data, xlab=NULL, 
+     main="Some made-up data")
+@
+\keyidea{Some functions, like plot(), allow you to specify a dataframe, and then you can use the bare column names within the function.}
+\keyidea{Some functions, like plot(), are clever and will change their behavior depending on the object you give them.}
+
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{installing a package, reading in a data set}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+
+<<>>=
+install.packages("haven")
+@
+
+\seealso{the foreign package}
+
+<<>>=
+library(haven)
+@
+\seealso{require() for loading an installed package}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{A note about packages}
+\setbeamercovered{transparent}
+
+\begin{itemize}
+  \item<1->When you run install.packages(), R contacts CRAN to get the package you want, so you need an internet connection for it to work.
+  \item<2->You only need to install each package once (and again whenever you want updates for it), and it will be saved on your computer so you can use it offline.
+  \item<3->You need to load each package you want to use again in each R session. Why?
+\end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{A note about packages}
+\setbeamercovered{transparent}
+
+\begin{itemize}
+  \item<1->Note that different packages can have functions with the same name (e.g. select() is a function in several packages)
+  \item<2->packages get updated, and some packages may not continue to work on new versions of R if the package is no longer being supported (this is rare). 
+  \item<3->You need to load each package you want to use again in each R session. Why?
+\end{itemize}
+
+\seealso{To manage package versions, check out packrat.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+
+<<>>=
+?read_sav
+@
+
+\seealso{foreign::read.spss()}
+\keyidea{To refer to a specific function in a package, use package.name::function.name()}
+\pause
+Does this work?
+<< read_sav >>=
+surveydata <- read_sav("Workshop_Sign_up_Spring2016.sav")
+
+
+write_sav(surveydata, "Workshop_Sign_up_Spring2016_deid.sav")
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+\keyidea{Always check your work after reading in a data frame. Use str() and View() or head().}
+
+
+
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+
+
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{How to interpret p-values like a Bayesian}
+
+<<pval-demonstration-plot, echo=FALSE, out.height='.9\\textheight', out.width='.8\\linewidth'>>=
+powers_to_try <- c(.1, .3, .5, .7, .9) # the shape of that curve depends on the power of your experiment
+
+plot.data <- data.frame(alpha=.05, 
+                        power_level=gl(k=15, n=length(powers_to_try), labels=c(powers_to_try)), 
+                        p_null=seq(from=0, to=1, length.out=15))
+
+plot.data$power <- as.numeric(as.character(plot.data$power_level)) # making a numeric version of the power factor, to use in the calculations below                       
+plot.data$p_sig <- with(plot.data, alpha*p_null + (power)*(1-p_null))
+plot.data$p_null_given_sig <- with(plot.data, (alpha*p_null)/p_sig)
+
+library(ggplot2)
+ggplot(plot.data, aes(x=p_null, y=(1-p_null_given_sig), color=power_level)) + 
+  geom_line(size=1.5) +
+  xlab("Probability of the null") +
+  ylab(NULL) +
+  ggtitle("What's the probabilty the null is false,\ngiven a significant result?")
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+
+\subsection{Probability distributions}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Describing probability with functions}
+
+Probability mass functions (PMF) are for discrete variables, which take a finite number of values. Probability density functions (PDF) are for continuous variables, which can take infinitely many values.
+
+<<pmf-plot, fig.width=5, fig.height=5, out.width='.45\\linewidth', echo=FALSE, fig.show='hold'>>=
+cat <- rpois(100, 2) # drawing 100 random values from a Poisson distribution
+cont <- rbeta(n=100, shape1=10, shape2=4) # drawing 100 random values from a beta distribution
+barplot(table(cat)/100, ylab="Probability Mass")
+plot(density(cont), main="", ylab="Probability Density", xlab="")
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+\end{document}
