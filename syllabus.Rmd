@@ -18,6 +18,10 @@ output: word_document
   * SPSS
   * SAS
 * The stucture of R: base + packages
+
+## important questions
+* variables, functions, arguments
+
   
 ## Getting your data into R
 * working directory
