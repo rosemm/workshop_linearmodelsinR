@@ -1,0 +1,95 @@
+---
+title: "participant sign up"
+author: "Rose Maier"
+date: "May 2, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r cleaning}
+library(dplyr); library(tidyr)
+signups <- read.csv("Workshop_Sign_up_Spring2016.csv", skip=1)
+colnames(signups)[3] <- "drop"
+colnames(signups)[11] <- "attend_short_tue"
+colnames(signups)[12] <- "attend_short_wed"
+colnames(signups)[13] <- "attend_short_thu"
+colnames(signups)[14] <- "attend_allday_sun"
+colnames(signups) <- gsub(x=colnames(signups), pattern="Do.you.have.experience.with.any.other.statistical.software..Select.all.that.apply..", replacement="other_stats_")
+colnames(signups) <- gsub(x=colnames(signups), pattern="Do.you.have.experience.with.any.other.programming.languages..Select.all.that.apply..", replacement="other_programming_")
+colnames(signups) <- gsub(x=colnames(signups), pattern="Participant.information.", replacement="")
+
+signups <- signups %>% 
+  select(starts_with("attend_"), 
+         Name, 
+         Email,
+         Institutional.Affiliation,
+         grad_stud=Are.you.a.graduate.student.,
+         R_exp=Do.you.have.any.experience.using.R.,
+         starts_with("other_"),
+         why=starts_with("Why.do.you.want"),
+         comments=Any.other.thoughts.) %>%
+  rename(text_programming=other_programming_other..please.specify..TEXT, 
+         text_stats=other_stats_other..please.specify..TEXT) 
+
+# remove people who've said they can't come
+signups <- filter(signups, Name != "Zhen Cheng")
+ 
+# fix typo
+signups$Email <- gsub(pattern="khsu@oregon.edu.tw", x=signups$Email, replacement = "khsu@uoregon.edu")
+
+paste(signups$Email, collapse = ", ") # all emails
+
+```
+edits: 
+Jimena <jimenas@uoregon.edu> not coming Thurs
+Zhen <zcheng@uoregon.edu> not coming at all
+Jessica Flannery <jflanner@uoregon.edu> planning to come, but may have to miss Sun to run participants
+
+```{r signups_by_day}
+sun <- filter(signups, attend_allday_sun==1); nrow(sun)
+paste(sun$Email, collapse = ", ")
+tue <- filter(signups, attend_short_tue==1); nrow(tue)
+paste(tue$Email, collapse = ", ")
+wed <- filter(signups, attend_short_wed==1); nrow(wed)
+paste(wed$Email, collapse = ", ")
+thu <- filter(signups, attend_short_thu==1); nrow(thu)
+paste(thu$Email, collapse = ", ")
+
+all_four <- filter(signups, attend_allday_sun==1 &
+                     attend_short_tue==1 & 
+                     attend_short_wed==1 &
+                     attend_short_thu==1); nrow(all_four)
+paste(all_four$Email, collapse = ", ")
+```
+
+```{r survey_data}
+
+signups$R_exp <- factor(signups$R_exp, 
+                           levels=c(1, 2, 3, 4), 
+                           labels=c("I'm brand new to R", "I have tried to use R, but I never got very far and/or it was a long time ago", "I have some R experience", "I know R pretty well"))
+
+# other_qs <- grep(pattern="other_", x=colnames(signups)) # the column numbers of variables that contain "other_"
+# signups[ ,other_qs] <- sapply(X=signups[ ,other_qs], FUN=factor, levels=1, labels="yes" )
+
+signups$text_stats <- gsub(pattern="simple functions in matlab", x=signups$text_stats, replacement="matlab", ignore.case=TRUE)
+signups$text_programming <- gsub(pattern="none", x=signups$text_programming, replacement="", ignore.case=TRUE)
+
+signups$text_stats <- factor(tolower(signups$text_stats), levels=sort(unique(tolower(signups$text_stats)))[-1])
+signups$text_programming <- factor(tolower(signups$text_programming), levels=sort(unique(tolower(signups$text_programming)))[-1])
+
+data <- signups %>% 
+  select(R_exp, starts_with("other_"), starts_with("text_")) %>% 
+  select(-other_stats_other..please.specify., -other_programming_other..please.specify.) 
+
+  # separate(col=text_stats, into=paste("other_stats", 1:9, sep="_"), sep=",", fill="right", extra="merge") %>% 
+  # separate(col=text_programming, into=paste("other_programming", 1:9, sep="_"), sep=",", fill="right", extra="merge") %>% 
+  # gather(key="other_stats", value="value", starts_with("other_stats")) %>% 
+  # select(-value) %>% 
+  # gather(key="other_programming", value="value", starts_with("other_programming")) %>% 
+  # select(-value)
+
+```
+
