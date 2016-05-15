@@ -1,0 +1,267 @@
+functions (auto-formatting) for:
+- what will this code do?
+- how can you get this output?
+- key idea
+- getting help
+	- ?: When you know the exact name of the function you want, you just want to pull up the help documentation for it.
+	- ??: When you think you've got a function for what you need, you just can't remember its exact name.
+	- google: When you know what you want to do, but don't know how.
+- alternatives (other packages, other functions)
+- learning resources
+	- swirl
+	- exploratory, for dplyr https://blog.exploratory.io/
+	- rstudio cheatsheets
+	- rclub
+	- regular expressions: http://regexone.com/
+	http://stat545.com/
+	http://www.ats.ucla.edu/stat/r/seminars/ggplot2_intro/ggplot2_intro.htm
+	http://www.ats.ucla.edu/stat/r/seminars/Repeated_Measures/repeated_measures.htm
+
+practice problems:
+make the dataframe look like this
+make code for this plot
+what will this code do?
+what plot will this code draw?
+
+
+Intro
+What is R?
+
+How does R compare to other ways of doing data anlaysis?
+- 100% scripts (100% reproducible)
+- data cleaning, transforming, analyzing, presenting, even writing and interpretation all in one place
+- free (open)
+- not a spreadsheet environment (changes the way you think about your data)
+- handles pretty much anything you might want to do to your data (so no need to switch between environments), and is growing every day
+- modular (you can't download the whole thing once and be done)
+
+How do you learn R?
+\item It's a language. You learn by using it.
+\item My recommendation: Figure out something you want to do in R (a real, live data problem you have) and work on that, rather than reading about it in the abstract. You won't learn R by having someone explain it to you, only by doing it youself. Best case scenario: Find a bunch of problems to work on in R, and a group to work on them with, so you get experience with a broad range of applications.
+
+This workshop
+\item Focus on common stumbling blocks for people who try to learn R on their own. I want to take down barriers, so you'll be well placed to continue practicing R back in your natural habitat. 
+\item Lots of practice, and we'll return to key concepts several times. 
+\item For those of you who are learning/psych geeks... 
+	\item I'm trying to maximize your ability to generalize what you learn here to new circumstances you'll encounter, so I'll be harnessing the power of interleaved training and progressive alignment. 
+	\item I'll ask you to tackle realistic practice problems from the two perspectives you'll most likely to encounter in real life: I have an idea in my head and I need to turn it into code, and I've got some code here and I need to figure out what it does.
+	\item You'll also notice consistent color-coding of different types of information throughout to help you allocate your attention in support of your learning goals, and to facilitate appropriate comparison across situations.
+\item The format:
+	\item I'll introduce a function or task, walk you through an example, and pose a practice problem. You work with those around you to solve the practice problem (and potentially work on extensions), and I'll answer questions. Then we'll briefly go over the/a solution as a group. Rinse and repeat.
+
+# Basics of using R
+## R as a calculator 
+3 + 4
+112/2
+sqrt(5)
+
+## functions in R
+sum(3,4)
+log(1/2)
+sin(0)
+sin(1)
+sin(pi)
+\keyidea{Functions look like do_something(to_this)
+?log
+\keyidea{Pull up the help documentation for a function by ?its_name
+
+## creating objects in R
+x <- 3
+x
+\keyidea{If you save something as an object, you can get the value by just calling the object name.
+\wwtd{x + 4
+y <- 4
+\wwtd{x + y
+x <- 1
+\wwtd{x
+\keyidea{When you reuse an object name, it overwrites the old object (with no warning!)
+variable x <- 3
+\keyidea{White space usually doesn't matter, except in the middle of a name
+sqrt_5 <- sqrt(5)
+\keyidea{You can name an object pretty much anything you want (as long as there's no white space).}
+pi <- sqrt(5)
+\keyidea{Actually, there are some names you can't use (they're reserved).}
+favorite_phrase <- "woo hooo!"
+\keyidea{Strings need to be surrounded by quotes.}
+
+## KEY IDEAS from this section ##
+
+## vectors
+x <- 1:10
+\wwtd{x + 4
+x <- c(1,2,10)
+y <- c(3,5,7)
+\wwtd{x + y
+seq(from=1, to=10, by=1)
+\wwtd{seq(from=1, to=10, by=2)
+seq(1, 10, by=1)
+seq(1, 10)
+\wwtd{seq(10, 1)
+seq(1)
+\keyidea{Some arguments in functions have defaults}
+\keyidea{You can (but don't have to) specify the names of arguments. I recommend doing it.}
+\hwydt{Find out the defaults for seq()}
+\hwydt{Generate this vector:  10, 20, 30, 40, 50}
+rep(3, times=1)
+\wwtd{rep(favorite_phrase, 3)}
+\wwtd{c(favorite_phrase, 1:5)}
+x <- c(favorite_phrase, 1:5)
+mode(x)
+\keyidea{You can't combine different types of items in the same vector. If you try, R will coerce them to be the same.}
+\hwydt{\\ Generate this vector: 10, 10, 20, 20, 30, 30}
+\hwydt{\\ Generate this vector: 10, 20, 30, 10, 20, 30}
+\keyidea{Applying functions sequentially. Send the output of one function as the input to the next.}
+\keyidea{There's more than one correct solution! That's usually the case.}
+	c(10, 10, 20, 20, 30, 30)
+	c(10, 20, 30, 10, 20, 30)
+	rep(seq(10, 30, by=10), times=2)
+	rep(seq(10, 30, by=10), each=2)
+	sort(rep(seq(10, 30, by=10), 2))
+\wwtd{log(seq(from=-10, to=10, by=.01))
+cor(x,y)
+plot(y ~ x)
+\hwydt{Find out the defaults for plot()}
+\wwtd{plot(x ~ y)}
+rnorm(10)
+\hwydt{Find out the defaults for rnorm()}
+\hwydt{Generate one example of a random IQ score (mean of 100, standard deviation of 15).}
+\wwtd{rep(rnorm(1), times=10)}
+\wwtd{hist(rnorm(100, mean=50, sd=5))}
+
+## KEY IDEAS from this section ##
+
+\hwydt{Generate this plot (showing the value of sin from -5 to 5).
+x <- seq(from=-5, to=5, by=.01); plot(sin(x) ~ x)
+
+\hwydt{Generate this plot (showing random scatter plot, random x and random y)}
+plot(rnorm(100) ~ rnorm(100), xlab="Predictor", ylab="Outcome", main="My lovely null results")
+
+Congrats! We've only just started, and already you're plotting null results. :)
+
+## upgrading from vectors to data frames!
+x <- data.frame(id=1:10, scores = rnorm(10))
+x
+str(x)
+\keyidea{Use str(an_object) to learn about its structure.}
+head(x)
+tail(x)
+View(x)
+\keyidea{Use head(), tail() and View() to peak at a data frame.}
+conditions <- rep(c("condition 1", "condition 2", "condition 3"), each=5)
+scores <- runif(15, min=1, max=10)
+\hwydt{Learn about a function you don't recognize: runif()}
+my_data <- data.frame(conditions, scores)
+* See also: gl()
+str(my_data)
+\keyidea{You can combine different types of variables in the same data frame.}
+my_data$scores
+\keyidea{Each column in a data frame is a vector.}
+\keyidea{You can refer to one column within a data frame with $, like dataframe$columnname.}
+
+## lecture: Data frames in R (types of variables, properties of data frames such as dim, column names, other attributes)
+
+## there are data sets that are built-in to R
+head(iris)
+str(iris)
+data()
+colnames(iris)
+summary(iris)
+
+## KEY IDEAS from this section ##
+\hwydt{Generate this plot (barplot showing condition on the x-axis and score on the y-axis)}
+plot(scores ~ conditions, data=my_data)
+
+
+## installing a package, reading in a dataset
+install.packages("haven")
+* See also: the foreign package
+library(haven)
+* See also: require()
+\keyidea{You only have to install a new package once, but you need to load it whenever you want to use it. You need internet to install initially, but after that it's saved on your computer. 
+?read_sav
+* See also: foreign::read.spss()
+\keyidea{To refer to a specific function in a package, use package_name::function_name()
+
+\keyidea{Always check your work after reading in a data frame. Use str() and View() or head().
+
+## lecture: The structure of R (packages, etc.)
+	- note that different packages can have functions with the same name (e.g. select() is a function in several packages)
+	- packages get updated, and some packages may not continue to work on new versions of R if the package is no longer being supported (this is rare). To manage package versions, check out packrat.
+
+
+## Looking under the hood: lists
+We've talked vectors and data frames, and that's most of what you'll use in your data analysis. 
+It's worth knowing about another type of R object, though --- lists --- because secretly everything in R is lists!
+A list is basically a super vector, where each element does not have to be the same type anymore. 
+In fact, each element can itself have multiple elements. Each element could be a list! 
+Data frames are a special type of list, where each element is a vector of the same length.
+You probably won't make lists very much yourself, but lots of R functions return lists, so it's a good idea to know what they are and how to deal with them.
+\hwydt{You have a list of all of the students in your class. Every time you ask a question, you want to randomly call on someone. Pick a random name from this list of students.
+EXAMPLES
+a <- list("cabbage", pi, 13)
+a
+str(a)
+You can name the elements in a list (that's why you can name the columns in a data frame, by the way).
+names(a)
+names(a) <- c("veggie", "lucky_number", "unlucky_number")
+str(a)
+a
+
+## indexing
+my_vector <- c(1:5, 13, 20)
+my_vector[1]
+my_vector[10]
+\wwtd{my_vector[1:3]
+my_vector > 5
+\wwtd{my_vector[my_vector > 5]
+my_list <- list(conditions=c("treatment A", "treatment B", "control"), prescores=data.frame(condition))
+\wwtd{my_list[1]
+
+
+\hwydt{Calculate the mean, standard deviation, and standard error for .
+
+
+# ggplot2
+Lots of options for plotting in R. We've already seen some examples of the base R plotting functions, and they work great. 
+When might you want to use base plotting, and when might ggplot2 be better.
+
+## popular types of plots
+boxplot
+\keyidea{ggplot() and aes() set up what data will get plotted. Then you tell it how to plot with geoms.
+scatterplot
+barplot
+barplot with error bars (SE, SD, 95CI)
+\keyidea{You should have your data manipulation (e.g. getting summary stats) done before you try to get ggplot to plot it.
+\keyidea{ggplot works with layers, and you can add as many layers as you like.
+line plot
+line plot with error bars
+plotting regression coeffcients (points with error bars)
+plotting means (points with error bars)
+histogram
+density plot
+
+## axes, legends and labels
+theme()
+labs()
+ggtitle()
+\keyidea{There are LOTS of different ways to control the look of your plots. This feels overwhelming at first, but hopefully you'll appreciate the flexibility later. 
+labeling axes
+axis text (angle)
+flip axes
+transform continuous scales (log)
+xlim(), ylim()
+reordering factors, relabeling factors
+
+## controling colors
+color vs. fill
+numeric vs. factor
+
+## ggplot for data visualization
+aes(color=, fill=)
+facet_wrap
+facet_grid
+geom_smooth()
+
+## saving your output
+ggsave()
+
