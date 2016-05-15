@@ -101,7 +101,7 @@
 \maketitle
 
 <<setup, include=FALSE, echo=FALSE>>=
-library(knitr)
+library("knitr")
 opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALSE)
 @
 
@@ -287,7 +287,7 @@ Everything that exists is an object.\\
 Everything that happens is a function call.\\
 - John Chambers
 \end{quote}
-
+\vfill
 
 From \url{http://adv-r.had.co.nz/Functions.html}
 
@@ -351,7 +351,7 @@ favorite_phrase <- "woo hooo!"
 Implicit contract with the computer / scripting language: Computer will do tedious computation for you. In return, you will be completely precise in your instructions. Typos matter. Case matters. Get better at typing. \\
 - Jenny Bryan
 \end{quote}
-
+\vfill
 
 From \url{http://stat545-ubc.github.io/block002_hello-r-workspace-wd-project.html}
 
@@ -775,10 +775,31 @@ install.packages("haven")
 \seealso{the foreign package}
 
 <<>>=
-library(haven)
+library("haven")
 @
 \seealso{require() for loading an installed package}
 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Learning about packages}
+<<>>=
+help(package="haven")
+@
+\keyidea{To pull up all of the documentation for a specific package, you can use the help() command. It's like ? but more flexible.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Functions in packages}
+
+<<>>=
+?read_sav
+@
+
+\seealso{foreign::read.spss()}
+\keyidea{To refer to a specific function in a package, use package.name::function.name()}
+\pause
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
@@ -808,29 +829,258 @@ library(haven)
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: packages}
+
+\keyidea{To pull up all of the documentation for a specific package, you can use the help() command. It's like ? but more flexible.}
+\keyidea{To refer to a specific function in a package, use package.name::function.name()}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
 \begin{frame}[fragile]{Getting your data into R}
 
-<<>>=
-?read_sav
-@
-
-\seealso{foreign::read.spss()}
-\keyidea{To refer to a specific function in a package, use package.name::function.name()}
-\pause
-Does this work?
-<< read_sav >>=
+Does this work for you?
+<< echo=FALSE >>=
 surveydata <- read_sav("Workshop_Sign_up_Spring2016.sav")
-
-
-write_sav(surveydata, "Workshop_Sign_up_Spring2016_deid.sav")
+surveydata <- dplyr::select(surveydata, Q5_10:Q5_13, Q4, Q8:Q9_3_TEXT)
+write_sav(surveydata, "survey.sav")
+@
+<<read_sav>>=
+atlas <- read_sav("ATLAS.sav")
 @
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+
+When R looks for files on your computer, it doesn't search you're whole computer. It only looks in whatever folder (directory) it's currently in. \\
+R's current folder is called the "working directory."
+\pause
+<< getwd >>=
+getwd()
+@
+\pause
+If you want R to find something on your computer, you have three options:
+\begin{enumerate}
+  \item Put the file in R's working directory
+  \item Move R's working directory to where ever the file is saved
+  \item Specify the file path when you tell R to look for the file
+\end{enumerate}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+
+Option 1: Put the file in R's working directory.\\
+\bigskip
+\pause
+Option 2: Move R's working directory to where ever the file is saved. \\
+For example, if I want to get a file that's saved on my desktop, I can use setwd() to move R's gaze there:
+<< setwd >>=
+setwd("/Users/TARDIS/Desktop")
+@
+\bigskip
+\pause
+Option 3: Specify the file path when you tell R to look for the file.\\
+<< >>=
+atlas <- read_sav("/Users/TARDIS/Desktop/ATLAS.sav")
+@
+This doesn't change R's working directory.
+
+\keyidea{To read or save files, you need to know R's working directory and where the files are located on your computer (or where you want them saved).}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+This is a data set about the efficacy of a strength training self-efficacy intervention on high school student athletes.\\
+I have it stored in my working directory, in a folder called "data".
+<<>>=
+atlas <- read_sav("data/ATLAS.sav")
+head(atlas)
+str(atlas)
+summary(atlas)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+This is a data set about publicly available data, from OSF: \url{https://osf.io/srgjb/}
+<<>>=
+osf <- read.csv("data/OSF_data.csv")
+head(osf)
+str(osf)
+summary(osf)
+@
 
 \keyidea{Always check your work after reading in a data frame. Use str() and View() or head().}
+\pause
+<<>>=
+osf$X <- NULL
+str(osf)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+
+This is a file is from the corpus of infant-directed speech I'm currently analyzing.
+<<>>=
+corpus <- read.table("data/corpus.txt")
+@
+\keyidea{If you specify a file path with no initial /, it's a relative path, meaning R will look for a folder called that \emph{within} its current working directory.}
+\pause
+<< read.table >>=
+corpus <- read.table("data/corpus.txt", 
+                   header=TRUE, 
+                   sep="\t", 
+                   quote = NULL,
+                   row.names = NULL,
+                   stringsAsFactors = FALSE)
+@
+\keyidea{It may take several tries to read in a file correctly, depending on how it's formatted. Keep checking!}
+\pause
+<<>>=
+corpus <- read.delim("data/corpus.txt", stringsAsFactors = FALSE)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting your data into R}
+
+\begin{center}
+Do you have your own data? Try reading it into R.
+\end{center}
+
+\end{frame}
+% -------------------------------------------------------------
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas: Getting your data into R}
+
+\keyidea{To read or save files, you need to know R's working directory and where the files are located on your computer (or where you want them saved).}
+\keyidea{If you specify a file path with no initial /, it's a relative path, meaning R will look for a folder called that \emph{within} its current working directory.}
+\keyidea{Always check your work after reading in a data frame. Use str() and View() or head().}
+\keyidea{It may take several tries to read in a data file correctly, depending on how it's formatted. Keep checking to see if the read-in object looks correct!}
+
+\end{frame}
+% -------------------------------------------------------------
+
+\section{Data wrangling}
+\subsection{dplyr}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Working with data in R}
+\setbeamercovered{invisible}
+R has some built-in data sets, and there are also often additional data sets included with packages.
+Let's install the gapminder package to get those data.
+\hwydt{\\ Install a new package called "gapminder"}
+\pause
+<< gapminder_data >>=
+install.packages("gapminder")
+library("gapminder")
+help(package="gapminder")
+@
+
+\vfill
+From \url{http://www.gapminder.org/data/}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Working with data in R}
+
+Let's take a look at the gapminder data set:
+\pause
+<<>>=
+head(gapminder)
+str(gapminder)
+summary(gapminder)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+
+As anyone who's conducted a full analysis knows, it's only actually a tiny portion of your analysis time that's spent doing stats. 
+The rest is data cleaning / processing / reformatting / wrangling.\\
+
+There are lots of great ways to manipulate data in R (watch for "See also" boxes).
+I'm only going to focus on teaching you one of them: dplyr, and its companion tidyr.\\
+
+The reason is that dplyr is specifically designed for exactly what most researchers need: to handle all of the most common data wrangling tasks in a streamlined, intuitive way. 
+It's fast and slick, and it integrates beautifullly with great plotting tools, so you can get to the exciting part of your analysis faster.
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+
+The dplyr package is a little unusual in that it's not just a collection of functions that you're supposed to throw in with all of the rest of the functions you've got in R; it's designed to work as a cohesive set to meet pretty much all of your data manipulation needs. 
+Rather than just having dplyr functions sprinkled throughout a script of yours, you're likely to have dplyr sections within the script, where you use several related functions in a row. \\
+It's mostly made up of functions that work like "verbs" for modifying your data.
+Also, you also have the option to use pipes if you want, to make your data cleaning steps easier to read (and write).
+
+\learnmore{Here's an introduction to dplyr (with lots of examples!) by Hadley Wickham himself \url{https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html}}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+<<>>=
+install.packages("dplyr", "tidyr")
+library("dplyr")
+library("tidyr")
+help(package="dplyr")
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
 
 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{dplyr}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section}
+
+
+\end{frame}
+% -------------------------------------------------------------
 
 
 % -------------------------------------------------------------
@@ -860,7 +1110,7 @@ plot.data$power <- as.numeric(as.character(plot.data$power_level)) # making a nu
 plot.data$p_sig <- with(plot.data, alpha*p_null + (power)*(1-p_null))
 plot.data$p_null_given_sig <- with(plot.data, (alpha*p_null)/p_sig)
 
-library(ggplot2)
+library("ggplot2")
 ggplot(plot.data, aes(x=p_null, y=(1-p_null_given_sig), color=power_level)) + 
   geom_line(size=1.5) +
   xlab("Probability of the null") +
