@@ -6,31 +6,42 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, results='asis' )
 
-library(knitr) # for formatting output with kable() function
 library(dplyr) # for data wrangling
 library(tidyr) # for data wrangling
 library(ggplot2) # for plotting
 library(haven) # for the read_sav() function
+library(pander) # for formatting output from model summaries
 ```
 
 ## Data prep
 
 ```{r}
+atlas <- read_sav("data/ATLAS.sav")
+# str(atlas)
+# summary(atlas)
 
+atlas$use0 <- factor(atlas$use0, 
+                     levels=c(0, 1),
+                     labels=c("no", "yes")) 
+
+atlas$intervention <- factor(atlas$intervention, 
+                             levels=c(0, 1),
+                             labels=c("no", "yes")) 
 ```
 
 ## Running the model
 
 ```{r}
-
+model1 <- lm( STSE1 ~ STSE0 + intervention, data=atlas)
 ```
 
 ## Summarizing the results
 
 ```{r}
-
+model.sum <- summary(model1)
+pander(model.sum)
 ```
 
 ## Plotting
