@@ -576,9 +576,9 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Additional resources for learning ggplot2}
 \begin{itemize}
-  \item 
-  \item
-  \item For more in-depth material on ggplot2, see the resources at \url{http://ggplot2.org/}
+  \item Read Jenny Bryan's ggplot tutorials --- tons of great examples and code! Click on the files that have the file extension .md (those will be the easiest to read) \\ \url{https://github.com/jennybc/ggplot2-tutorial}
+  \item All of the geoms, with pictures \\ \url{http://docs.ggplot2.org/current/}
+  \item For more in-depth material on ggplot2, see the resources at \\ \url{http://ggplot2.org/}
 \end{itemize}
 
 \end{frame}
@@ -643,6 +643,7 @@ t.test(SE0 ~ intervention, data=atlas,
 \begin{frame}[fragile]{Test your knowledge}
 
 \hwydt{test whether students' pretest strength-training self-efficacy scores (STSE0) differ from zero}
+Hint: Take a look at the help documentation for t.test()
 \pause
 One-sample t-test
 <<>>=
