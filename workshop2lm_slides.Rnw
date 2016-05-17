@@ -363,12 +363,13 @@ lm( STSE1 ~ intervention, data=atlas,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Test your knowledge}
 
-\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest self-esteem (SE1), controlling for their pretest strength-training self-efficacy (STSE0)}
-\pause
+\wwtd{What will this model test?}
 <<  >>=
 lm( STSE1 ~ intervention + SE1 + STSE0, data=atlas,
     na.action=na.exclude)
 @
+\pause
+It will test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest self-esteem (SE1), controlling for their pretest strength-training self-efficacy (STSE0).
 
 \end{frame}
 % -------------------------------------------------------------
@@ -468,7 +469,18 @@ pander(model.sum)
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Summarize the model}
 
+If you want your results ANOVA style (with the sums of squares and the F tests instead of regression coefficients and t-tests), use the Anova() function in the car package
+<<>>=
+car::Anova(model1, type=3) # type 3 sums of squares
+@
+
+\keyidea{ANOVA style output and regression style output are just two different ways to communicate the same information}
+
+\end{frame}
+% -------------------------------------------------------------
 
 \subsection{Plotting}
 % -------------------------------------------------------------
@@ -554,8 +566,6 @@ ggplot(atlas, aes(x=STSE0, y=STSE1)) +
 
 \keyidea{geom\_smooth(method="lm") will draw the line of best fit through the data it corresponds to. Adding a factor to color= within aes() splits points and lines into subsets}
 
-\seealso{you can also add lines manually with geom\_abline(), where you specify the slope and intercept}
-
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
@@ -570,6 +580,27 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 @
 
 \learnmore{For a tutorial on controlling colors in ggplot, see an old R Club post of mine: \url{http://blogs.uoregon.edu/rclub/2015/02/17/picking-pretty-plot-palates/}}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting the line from your model, exactly}
+Because geom\_smooth() runs its own calculation to draw the line of best fit, sometimes you may want to specify the line yourself, so you can make sure it represents exactly what's in your model.
+
+<< predict >>=
+atlas$pred <- predict(model1, atlas)
+@
+
+\pause
+<< plot_predict >>=
+ggplot(atlas, aes(x=STSE0, y=STSE1, 
+                  color=intervention, fill=intervention)) + 
+  geom_point(alpha=.3) + 
+  geom_line(aes(y=pred, x=STSE0, color=intervention)) + 
+  labs(x="pretest strength training self-efficacy",
+       y="posttest strength training self-efficacy")
+@
+
+\seealso{you can also add lines manually with geom\_abline(), where you specify the slope and intercept}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -642,7 +673,7 @@ t.test(SE0 ~ intervention, data=atlas,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Test your knowledge}
 
-\hwydt{test whether students' pretest strength-training self-efficacy scores (STSE0) differ from zero}
+\hwydt{Test whether students' pretest strength-training self-efficacy scores (STSE0) differ from zero}
 Hint: Take a look at the help documentation for t.test()
 \pause
 One-sample t-test
@@ -655,7 +686,7 @@ t.test(x=atlas$STSE0) # can't use formula and data argument for one-sample t-tes
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Test your knowledge}
 
-\hwydt{test whether there was significant change in students strength-training self-efficacy scores}
+\hwydt{Test whether there was significant change in students strength-training self-efficacy scores}
 \pause
 Paired-sample t-test
 <<>>=
@@ -672,8 +703,8 @@ t.test(x=atlas$STSE0, y=atlas$STSE1,
 \pause
 <<>>=
 model <- lm(STSE0 ~ intervention, data=atlas)
-library(car)
-Anova(model, type=3) # type 3 sums of squares
+
+car::Anova(model, type=3) # type 3 sums of squares
 @
 
 \end{frame}
