@@ -102,7 +102,7 @@
 
 <<setup, include=FALSE, echo=FALSE>>=
 library("knitr")
-opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALSE)
+opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize')
 @
 
 % very important to use option [fragile] for frames containing code output!
@@ -1231,6 +1231,7 @@ gapminder %>%
 @
 
 \seealso{base::merge()}
+\learnmore{\\ \url{http://stat545.com/bit001_dplyr-cheatsheet.html}}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -1288,6 +1289,33 @@ gapminder %>%
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+\wwtd{\\ Can you understand this code? Use ? to look up functions you don't recognize.}
+<<>>=
+gapminder %>%
+  filter(continent == "Asia") %>%
+  select(year, country, lifeExp) %>%
+  arrange(year) %>%
+  group_by(year) %>%
+  filter(min_rank(desc(lifeExp)) < 2 | min_rank(lifeExp) < 2)
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+\wwtd{\\ Can you understand this code? Use ? to look up functions you don't recognize.}
+<<>>=
+gapminder %>%
+  group_by(continent, country) %>%
+  select(country, year, continent, lifeExp) %>%
+  mutate(le_delta = lifeExp - lag(lifeExp)) %>%
+  summarize(worst_le_delta = min(le_delta, na.rm = TRUE)) %>%
+  filter(min_rank(worst_le_delta) < 2) %>%
+  arrange(worst_le_delta)
+@
+\end{frame}
+% -------------------------------------------------------------
 
 
 \section{Plotting}
@@ -1309,14 +1337,19 @@ We've already seen some examples of the base R plotting functions, and they work
 The ggplot2 package is different because it's specifically designed with data exploration in mind --- not just what plots you'll need to draw, but what questions you'll need to answer about your data.\\
 \bigskip
 When might you want to use base plotting, and when might ggplot2 be better?
+\learnmore{\\ \url{https://github.com/jennybc/ggplot2-tutorial}}
 \end{frame}
-\pause
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
 <<ggplot2>>=
 install.packages("ggplot2")
 library("ggplot2")
 ?ggplot
 @
+\learnmore{Lots and lots of example plots with code \\ \url{http://shinyapps.org/apps/RGraphCompendium/index.php} \\ and \url{http://shiny.stat.ubc.ca/r-graph-catalog/}}
 
+\end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{ggplot2}
@@ -1328,11 +1361,274 @@ ggplot(gapminder, aes(x=year, y=pop))
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+Scatterplot
+<< scatter >>=
+ggplot(gapminder, aes(x=year, y=pop)) + 
+  geom_point()
+@
+\pause
+You can make the points semi-transparent to ameliorate issues from overplotting (alpha=0 is invisible, alpha=1 is full strength):
+<<>>=
+ggplot(gapminder, aes(x=year, y=pop)) + 
+  geom_point(alpha=.3)
+@
 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+Boxplot
+<< box >>=
+ggplot(gapminder, aes(x=continent, y=lifeExp)) + 
+  geom_boxplot()
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+Histogram
+<< hist >>=
+ggplot(gapminder, aes(x=lifeExp)) + 
+  geom_histogram()
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+\setbeamercovered{invisible}
+Barplot
+<< boxplot >>=
+ggplot(gapminder, aes(x=continent, y=lifeExp)) + 
+  geom_bar()
+@
+\pause
+geom\_barplot is really built for counting up numbers of cases, rather than displaying means (geom\_boxplot is designed for that). 
+But you can get a barplot, too, you just need to do some data wrangling first.
+\keyidea{You should have your data manipulation (e.g. getting summary stats) done before you try to get ggplot to plot it.}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+\setbeamercovered{invisible}
+Let's plot the mean lifeExp for each continent.
+<<>>=
+plot.data <- gapminder %>% 
+  group_by(continent) %>% 
+  summarize(mean.lifeExp=mean(lifeExp), 
+            sd=sd(lifeExp), 
+            n=n(), 
+            se=sd/sqrt(n))
+
+ggplot(plot.data, aes(x=continent, y=mean.lifeExp)) + 
+  geom_bar(stat="identity")
+@
+\pause
+Let's add error bars!
+<<>>=
+ggplot(plot.data, aes(x=continent, y=mean.lifeExp)) + 
+  geom_bar(stat="identity") + 
+  geom_errorbar(aes(ymax=mean.lifeExp + 2*se, 
+                    ymin=mean.lifeExp - 2*se), width = 0.3)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+\setbeamercovered{invisible}
+Adding layers to our scatterplot. \\
+geom\_smooth() adds a line of best fit:
+<<>>=
+ggplot(gapminder, aes(x=year, y=pop)) + 
+  geom_point(alpha=.3) + 
+  geom_smooth()
+@
+\keyidea{ggplot works with layers, and you can add as many layers as you like.}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+\setbeamercovered{invisible}
+Line plot
+<< line >>=
+ggplot(gapminder, aes(x=year, y=pop, group=country)) + 
+  geom_line(alpha=.3) 
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2}
+\setbeamercovered{invisible}
+The fun part! Exploring relationships bewteen several variables at once.\\
+Use color= for lines and points and fill= for other shapes. 
+<< scatter_color >>=
+ggplot(gapminder, aes(x=year, y=gdpPercap, color=continent)) + 
+  geom_point(alpha=.6) 
+
+ggplot(gapminder, aes(x=year, y=gdpPercap, 
+                      color=continent, fill=continent)) + 
+  geom_point(alpha=.6) + 
+  geom_smooth()
+@
+
+<< hist_color >>=
+ggplot(gapminder, aes(x=lifeExp, fill=continent)) + 
+  geom_histogram() 
+@
+
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2: axes}
+You can control a lot about how your plots look with theme().
+<<>>=
+?theme
+@
+\pause 
+There are a few sensible theme bundlles available as well:
+<< theme >>=
+ggplot(gapminder, aes(x=year, y=gdpPercap, 
+                      color=continent, fill=continent)) + 
+  geom_point(alpha=.6) + 
+  geom_smooth() + 
+  theme_bw()
+@
+
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2: axes}
+<<  >>=
+ggplot(gapminder, aes(x=year, y=gdpPercap, 
+                      color=continent, fill=continent)) + 
+  geom_point(alpha=.6, show.legend = FALSE) + 
+  geom_smooth(show.legend = FALSE) + 
+  theme(axis.title.x=element_blank(), 
+        axis.text.x =element_text(angle=90)) + 
+  xlim(c(1970, 2007)) + 
+  labs(title="GDP per capita over time")
+@
+
+\keyidea{There are LOTS of different ways to control the look of your plots. This feels overwhelming at first, but hopefully you'll appreciate the flexibility later.}
+
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2: axes}
+log transform an axis scale 
+<< log_trans >>=
+ggplot(gapminder, aes(x=year, y=gdpPercap, 
+                      color=continent, fill=continent)) + 
+  geom_point(alpha=.6) + 
+  geom_smooth() + 
+  scale_y_log10()
+@
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2: axes}
+
+Changing the order a factor displays in.\\
+Option 1: organize the levels of a factor based on some stat in the dataset
+<<  >>=
+ggplot(plot.data, aes(y=continent, x=mean.lifeExp)) + 
+  geom_point() + 
+  geom_errorbarh(aes(xmax=mean.lifeExp + 2*se, xmin=mean.lifeExp - 2*se), height=.1 )
+@
+\pause
+<<  >>=
+ggplot(plot.data, aes(y=reorder(continent, mean.lifeExp), x=mean.lifeExp)) + 
+  geom_point() + 
+  geom_errorbarh(aes(xmax=mean.lifeExp + 2*se, xmin=mean.lifeExp - 2*se), height=.1 )
+@
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2: axes}
+<<  >>=
+ggplot(plot.data, aes(x=reorder(continent, mean.lifeExp), y=mean.lifeExp)) + 
+  geom_point() + 
+  geom_errorbar(aes(xmax=mean.lifeExp + 2*se, xmin=mean.lifeExp - 2*se), height=.1 ) +
+  coord_flip()
+@
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{ggplot2: axes}
+
+Changing the order a factor displays in.\\
+Option 2: Change the order of the factor levels right in the data frame itself
+<<  >>=
+levels(plot.data$continent)
+plot.data$continent <- factor(plot.data$continent, 
+                              levels=c("Americas", "Europe", "Africa", "Asia", "Oceania"))
+@
+\pause
+<<  >>=
+ggplot(plot.data, aes(y=continent, x=mean.lifeExp)) + 
+  geom_point() + 
+  geom_errorbarh(aes(xmax=mean.lifeExp + 2*se, xmin=mean.lifeExp - 2*se), height=.1 )
+@
+\end{frame}
+% -----------------------------------------------------------
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge: ggplot2}
+
+Use this data frame (one of the ones that comes with ggplot2):
+<<>>=
+head(diamonds)
+str(diamonds)
+@
+
+\hwydt{\\ Make a plot showing the relationship between log(carat) and log(price) of diamonds. Add a line that shows the linear best fit (i.e. a regression line)}
+\pause
+<< >>=
+ggplot(diamonds, aes(x=carat, y=price)) +
+  geom_point(alpha=.2) + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  geom_smooth(method="lm") + 
+  ggtitle("Diamonds")
+@
+
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge: ggplot2}
+
+
+\wwtd{What will this plot look like? Try drawing it (on paper) if you can.}
+<< >>=
+ggplot(diamonds, aes(x=price, fill=cut, color=cut)) + 
+  geom_density(alpha=.4) + 
+  labs(y=NULL)
+@
+
+\end{frame}
+% ------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge: ggplot2}
+
+
+\wwtd{What will this plot look like? Try drawing it (on paper) if you can.}
+<< >>=
+ggplot(diamonds, aes(x=price, fill=cut, color=cut)) + 
+  geom_density(alpha=.4) + 
+  labs(y=NULL) + 
+  facet_wrap(~ color)
+@
+
+\end{frame}
+% ------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section}
 
 \keyidea{ggplot() and aes() set up what data will get plotted. Then you tell it how to plot with geoms.}
+\keyidea{You should have your data manipulation (e.g. getting summary stats) done before you try to get ggplot to plot it.}
+\keyidea{ggplot works with layers, and you can add as many layers as you like.}
 
 \end{frame}
 % -------------------------------------------------------------
