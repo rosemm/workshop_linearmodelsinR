@@ -180,9 +180,9 @@ library(haven)
 \keyidea{You only have to install a new package once, but you need to load it whenever you want to use it. You need internet to install initially, but after that it's saved on your computer. 
 ?read_sav
 * See also: foreign::read.spss()
-\keyidea{To refer to a specific function in a package, use package_name::function_name()
+\keyidea{To refer to a specific function in a package, use package.name::function.name()}
 
-\keyidea{Always check your work after reading in a data frame. Use str() and View() or head().
+\keyidea{Always check your work after reading in a data frame. Use str() and View() or head().}
 
 ## lecture: The structure of R (packages, etc.)
 	- note that different packages can have functions with the same name (e.g. select() is a function in several packages)
@@ -227,12 +227,12 @@ When might you want to use base plotting, and when might ggplot2 be better.
 
 ## popular types of plots
 boxplot
-\keyidea{ggplot() and aes() set up what data will get plotted. Then you tell it how to plot with geoms.
+\keyidea{ggplot() and aes() set up what data will get plotted. Then you tell it how to plot with geoms.}
 scatterplot
 barplot
 barplot with error bars (SE, SD, 95CI)
-\keyidea{You should have your data manipulation (e.g. getting summary stats) done before you try to get ggplot to plot it.
-\keyidea{ggplot works with layers, and you can add as many layers as you like.
+\keyidea{You should have your data manipulation (e.g. getting summary stats) done before you try to get ggplot to plot it.}
+\keyidea{ggplot works with layers, and you can add as many layers as you like.}
 line plot
 line plot with error bars
 plotting regression coeffcients (points with error bars)
