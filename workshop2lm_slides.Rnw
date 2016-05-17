@@ -2,7 +2,7 @@
 
 \usetheme{Rochester}
 \usecolortheme{seagull}
-\setbeamercovered{transparent} % https://www.sharelatex.com/blog/2013/08/20/beamer-series-pt4.html
+\setbeamercovered{invisible} % https://www.sharelatex.com/blog/2013/08/20/beamer-series-pt4.html
 
 \usepackage{color} % https://en.wikibooks.org/wiki/LaTeX/Colors#Predefined_colors
 \usepackage{hyperref}
@@ -88,7 +88,7 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 \begin{itemize}
    \item<1-> Focus on the R code rather than the stats --- if you'd like to learn about the stats behind the general linear model more deeply, I can recommend several excellent classes and texts.
     \item<2-> Lots of practice. Learn R by using R!
-    \item<3-> We'll be using primarily dplyr and tidyr for data wrangling, and ggplot2 for plotting
+    \item<3-> We'll be using haven to read in an SPSS data file and ggplot2 for plotting
   \end{itemize}
 
 \end{frame}
@@ -110,22 +110,20 @@ Keep an eye out for...
 % -------------------------------------------------------------
 \begin{frame}[fragile]{}
 
-If you don't already have dplyr, tidyr, and ggplot2 installed, do that now:
+If you don't already have ggplot2, and haven installed, do that now:
 <<>>=
 install.packages("ggplot2")
-install.packages("dplyr")
-install.packages("tidyr")
+install.packages("haven")
 
 library("ggplot2")
-library("dplyr")
-library("tidyr")
+library("haven")
 @
 
 
 \end{frame}
 % -------------------------------------------------------------
 
-\section{General linear model overview}
+\section{Background and overview}
 \subsection{What is the general linear model?}
 \setbeamercovered{transparent}
 % -------------------------------------------------------------
@@ -139,6 +137,8 @@ Quite a lot! Most basic stats techniques are based on the general linear model.
     \item<4-> MANOVAs, multivariate multiple regression
     \item<5-> advanced techniques like HLM, SEM, etc. are extensions
   \end{itemize}
+
+\keyidea{Most basic stats rely on the same underlying math. Sometimes we want the results displayed differently depending on the design, but the calculations are the same.}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -158,9 +158,7 @@ In most cases (when you have a single outcome variable), this can be written in 
 \end{frame}
 % -------------------------------------------------------------
 
-
-
-\subsection{The lme4 package}
+\subsection{Tips for presenting model results}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[ 
@@ -172,63 +170,59 @@ In most cases (when you have a single outcome variable), this can be written in 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Install the lme4 package}
-\setbeamercovered{invisible}
+\begin{frame}[fragile]{Building dynamic documents}
 
-<< install_lme4 >>=
-install.packages("lme4")
-library("lme4")
-@
+No matter what software you're using, it's a pain to copy-paste over numbers from a table in your output to a table in your manuscript. \\
 \pause
-Remember...
-\begin{itemize}
-  \item<1-> When you run install.packages(), R contacts CRAN to get the package you want, so you need an internet connection for it to work.
-  \item<2-> You only need to install each package once (and again whenever you want updates for it), and it will be saved on your computer so you can use it offline.
-  \item<3-> You need to load each package you want to use again in each R session. 
-\end{itemize}
-
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{A note about packages}
-
-Note the message you get when you load lme4: \\
 \bigskip
-{\color{red}The following object is masked from 'package:tidyr': \\
-expand}
+More importantly, any human error in that copy-pasting can create a huge mess.\\
+\pause
+\bigskip
+Wouldn't it be great if you could have R automatically send your output to word or pdf? Wish granted!
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Hi, lme4}
+\begin{frame}[fragile]{Building dynamic documents}
 
-Let's get to know our new friend.
 <<>>=
-help(package="lme4")
+install.packages("knitr")
+library("knitr")
 @
 
-\seealso{nlme package. For a great comparison of differences between the two packages, see the help page for the lme4 package.}
+\pause
+You can use knitr tools built right into R Studio to write r-markdown documents that include both code and text, and then "knit" them up into .docx, .pdf, or .html.\\
+This makes it easy to get your R output into (close to) the table formatting you'll need in your document.
+
+\seealso{If you want to use latex instead of markdown for the text part, use Sweave files (.rnw) instead of  R-markdown (.rmd)}
 
 \end{frame}
 % -------------------------------------------------------------
-\setbeamercovered{transparent}
 % -------------------------------------------------------------
-\begin{frame}[fragile]{lme4}
+\begin{frame}[fragile]{Building dynamic documents}
 
-What makes running a multilevel model different from regular regression models? 
-\begin{itemize}
-  \item<1-> You can model what would otherwise be non-independent observations. Yay!
-  \item<2-> You have several different sources of error variance to think about (and covariances among them!)
-  \item<3-> There is no longer an analytic solution --- the computer has to brute force a solution by trying millions of combinations of parameter estimates and seeing what yields the best fit. The lme4 package offers a few different options for what estimation procdedure to use. It defaults to REstricted Maximum Likelihood (REML), which I recommend.
-\end{itemize}
+Markdown is a super simple language for formatting text. It can't do much, but it handles most of what you'll need for a basic document, and it's really quick to learn.
+
+\learnmore{ \url{https://daringfireball.net/projects/markdown/basics} }
+\pause
+Try opening a new .rmd file in R Studio now!
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Building dynamic documents}
+
+We'll use pander to automatically format model summaries into lovely tables.
+<< >>=
+install.packages("pander")
+@
 
 \end{frame}
 % -------------------------------------------------------------
 
 
-
-\section{Running models}
-\subsection{Prepping your data for MLM}
+\section{Run some models!}
+\subsection{Prepping the data}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[ 
@@ -254,6 +248,8 @@ If you want R to find something on your computer, you have three options:
   \item Specify the file path when you tell R to look for the file
 \end{enumerate}
 
+\seealso{You can also use the menu options in R Studio to change R's working directory.}
+
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
@@ -264,351 +260,422 @@ I'll use option 3, specifying the file path for the file when I tell R to read i
 \bigskip
 Find the file on your computer, get its location, and add that file path to your read\_sav command:
 << >>=
-atlas <- read_sav("/Users/TARDIS/Desktop/ATLAS.sav")
+atlas <- read_sav("data/ATLAS.sav")
+@
+
+\keyidea{Remember, if your data file isn't in R's working directory you need to tell R where to look for it.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Check your data}
+
+These are data from an intervention intended to reduce steroid use in student athletes by targeting their strength training self-efficacy. 
+
+<<>>=
+str(atlas)
+head(atlas)
+summary(atlas)
+@
+
+
+\keyidea{Always check your data frame using str() and View() or head() before you run any tests.}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Creating factors}
+
+<< make_factor >>=
+atlas$use0 <- factor(atlas$use0, 
+                     levels=c(0, 1),
+                     labels=c("no", "yes")) 
+
+atlas$intervention <- factor(atlas$intervention, 
+                             levels=c(0, 1),
+                             labels=c("no", "yes")) 
+
+summary(atlas)
+@
+\end{frame}
+% -------------------------------------------------------------
+
+
+\subsection{Running the model}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{lm()}
+
+<<>>=
+?lm
+@
+
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Writing a formula}
+
+Example question: Do students who got the intervention show improved strength-training self-efficacy, taking into account their pretest strength-training self-efficacy scores?
+\bigskip
+\pause
+<< ex1_model >>=
+model1 <- lm( STSE1 ~ STSE0 + intervention, data=atlas,
+              na.action=na.exclude)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+\setbeamercovered{invisible} 
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) are related to their post-test self-esteem (SE1)}
+\pause
+<<  >>=
+lm( STSE1 ~ SE1, data=atlas,
+    na.action=na.exclude)
 @
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Formatting your data}
+\begin{frame}[fragile]{Test your knowledge}
 
-text
+\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) are different for the intervention group vs. control}
+\pause
+<<  >>=
+lm( STSE1 ~ intervention, data=atlas,
+    na.action=na.exclude)
+@
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Centering}
+\begin{frame}[fragile]{Test your knowledge}
 
-Why center your variables?
+\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest self-esteem (SE1), controlling for their pretest strength-training self-efficacy (STSE0)}
+\pause
+<<  >>=
+lm( STSE1 ~ intervention + SE1 + STSE0, data=atlas,
+    na.action=na.exclude)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{Expand the previous model to also test whether the effect of the intervention depends on the students' pretest self-esteem (SE1). In other words, add an interaction between intervention and pretest self-esteem.}
+\pause
+<<  >>=
+lm( STSE1 ~ intervention + SE1 + STSE0 + SE1:STSE0, data=atlas,
+    na.action=na.exclude)
+@
+\pause
+<<  >>=
+lm( STSE1 ~ intervention + SE1*STSE0, data=atlas,
+    na.action=na.exclude)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest strength-training self-efficacy (STSE0). Allow for the possibility that the effect of the intervention depends on pretest score.}
+\pause
+<<  >>=
+lm( STSE1 ~ intervention + STSE0 + intervention:STSE0, data=atlas,
+    na.action=na.exclude)
+@
+\pause
+<<  >>=
+lm( STSE1 ~ intervention*STSE0, data=atlas,
+    na.action=na.exclude)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{The model}
+
+Let's run that last one.
+<<>>=
+model1 <- lm( STSE1 ~ intervention*STSE0, data=atlas,
+              na.action=na.exclude)
+@
+
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{The model}
+
+Let's look at that object we just created:
+<<>>=
+model1
+
+str(model1)
+
+plot(model1)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+
+\subsection{Summarizing the results}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Summarize the model}
+
+<<>>=
+summary(model1)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Summarize the model}
+
+add this code to your .rmd file, and make sure you've set your knitr options to results='asis'
+<<>>=
+model.sum <- summary(model1)
+pander(model.sum)
+@
+
+\seealso{the stargazer package, which makes lovely model tables and works for knitting to pdf but not Word}
+\seealso{knitr has a function for making tables, kable(), but it doesn't work for model summaries}
+
+\end{frame}
+% -------------------------------------------------------------
+
+
+\subsection{Plotting}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+
+The relationship between pretest and posttest scores
+<<>>=
+ggplot(atlas, aes(x=STSE0, y=STSE1)) + 
+  geom_point()
+@
+
+\pause
+To reduce overplotting:
+<<>>=
+ggplot(atlas, aes(x=STSE0, y=STSE1)) + 
+  geom_point(alpha=.3)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+
+Add in whether or not they got the intervention
+<<>>=
+ggplot(atlas, aes(x=STSE0, y=STSE1, color=intervention)) + 
+  geom_point(alpha=.3)
+@
+
+\pause
+another option
+<<>>=
+ggplot(atlas, aes(x=STSE0, y=STSE1)) + 
+  geom_point(alpha=.3) + 
+  facet_wrap(~ intervention)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+
+Want to change the way levels of a factor display? \\
+You'll need to change the factor itself in the dataframe:
+<< relabel_factor >>=
+atlas$intervention <- factor(atlas$intervention,
+                             levels=c("yes", "no"),
+                             labels=c("intervention", "control"))
+@
+
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+
+Show the line of best fit
+<<>>=
+ggplot(atlas, aes(x=STSE0, y=STSE1, 
+                  color=intervention, fill=intervention)) + 
+  geom_point(alpha=.3) + 
+  geom_smooth(method="lm")
+@
+
+\pause
+with faceting instead
+<<>>=
+ggplot(atlas, aes(x=STSE0, y=STSE1)) + 
+  geom_point(alpha=.3) + 
+  geom_smooth(method="lm") + 
+  facet_wrap(~ intervention)
+@
+
+\keyidea{geom\_smooth(method="lm") will draw the line of best fit through the data it corresponds to. Adding a factor to color= within aes() splits points and lines into subsets}
+
+\seealso{you can also add lines manually with geom\_abline(), where you specify the slope and intercept}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+<< final_plot >>=
+ggplot(atlas, aes(x=STSE0, y=STSE1, 
+                  color=intervention, fill=intervention)) + 
+  geom_point(alpha=.3) + 
+  geom_smooth(method="lm") + 
+  labs(x="pretest strength training self-efficacy",
+       y="posttest strength training self-efficacy")
+@
+
+\learnmore{For a tutorial on controlling colors in ggplot, see an old R Club post of mine: \url{http://blogs.uoregon.edu/rclub/2015/02/17/picking-pretty-plot-palates/}}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Additional resources for learning ggplot2}
 \begin{itemize}
-  \item<1-> If you have interactions bewteen continuous predictors, not centering can produce multicollinearity :(
-  \item<2-> Centering often makes interpretation easier, if 0 isn't an interesting/meaningful value on your scales.
-  \item<3-> Sometimes it can make your model converge a little faster, since the intercept won't jump around as much iteration to iteration.
-  \item<4-> It doesn't hurt anything, so might as well!
+  \item 
+  \item
+  \item For more in-depth material on ggplot2, see the resources at \url{http://ggplot2.org/}
 \end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
+
+\section{More models}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting special output for other types of models}
+
+<<>>=
+?t.test
+@
+
 \pause
-Centering only makes sense for continuous variables. Be careful to never try to center a categorical predictor.
+<<>>=
+install.packages("car")
+library("car")
+?Anova
+@
+
+Note: I recommend car::Anova() over stats::aov() because it allows you to use type 3 sums of squares, which is probably what you want and what your readers and colleagues are expecting (it's what SPSS and SAS use).
 
 \end{frame}
-% % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Subset analysis}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting special output for other types of models}
 
-One lovely thing about the lmer() function is that it includes a subset argument --- that means if you only want to run the model on some of your observations and not others, you don't have to save a new data frame for that, you can just sepcify the subset right in your lmer() command!
-\bigskip
+Do students' pretest scores differ in the intervention vs. control groups?
+<<>>=
+t.test(STSE0 ~ intervention, data=atlas, 
+       var.equal=TRUE)
+@
+
 \pause
-By default, it will use all of the observations in the data frame.
+Welch approximation (does not assume equal variance)
+<<>>=
+t.test(STSE0 ~ intervention, data=atlas, 
+       var.equal=FALSE)
+@
 
-\end{frame}
-% -------------------------------------------------------------
-
-\subsection{Example 1: Nested data}
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Overview}
-\tableofcontents[
-    currentsubsection,
-    hideothersubsections,
-    sectionstyle=show/shaded,
-    subsectionstyle=show/shaded,
-    ]
-\end{frame}
-% % -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Quick review: lm}
-
-text
+\pause
+How many pariticipants got intervention vs. control?
+<<>>=
+summary(atlas$intervention)
+@
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Model 1: Random intercepts}
+\begin{frame}[fragile]{Test your knowledge}
 
-text
+\hwydt{test whether students' pretest self-esteem differ in the intervention vs. control groups}
+\pause
+<<>>=
+t.test(SE0 ~ intervention, data=atlas, 
+       var.equal=TRUE)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{test whether students' pretest strength-training self-efficacy scores (STSE0) differ from zero}
+\pause
+One-sample t-test
+<<>>=
+t.test(x=atlas$STSE0) # can't use formula and data argument for one-sample t-tests
+@
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Model 2: Adding random slopes}
+\begin{frame}[fragile]{Test your knowledge}
 
-text
-
-\end{frame}
-% % -------------------------------------------------------------
-
-
-\subsection{Example 2: Longitudinal data}
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Overview}
-\tableofcontents[
-    currentsubsection,
-    hideothersubsections,
-    sectionstyle=show/shaded,
-    subsectionstyle=show/shaded,
-    ]
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{title}
-
-text
-
-\end{frame}
-% % -------------------------------------------------------------
-
-
-\subsection{Example 3: Random effect}
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Overview}
-\tableofcontents[
-    currentsubsection,
-    hideothersubsections,
-    sectionstyle=show/shaded,
-    subsectionstyle=show/shaded,
-    ]
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{title}
-
-text
+\hwydt{test whether there was significant change in students strength-training self-efficacy scores}
+\pause
+Paired-sample t-test
+<<>>=
+t.test(x=atlas$STSE0, y=atlas$STSE1,
+       paired=TRUE) 
+@
 
 \end{frame}
 % -------------------------------------------------------------
-%' % -------------------------------------------------------------
-%' \begin{frame}[fragile]{title}
-%' From http://www.unt.edu/rss/class/Jon/R_SC/Module9/LMM_Examples.R
-%' << echo=FALSE>>=
-%' ### Brief Introduction to LINEAR MIXED MODELS in R ###
-%' #
-%' # Also known as: Fixed and Random Effects Models, Nested effects Models, Mixed Effect Models,
-%' # and Hierarchical Linear Modeling.
-%' #
-%' # Read in / import the example data, naming it 'lmm.data'.
-%' 
-%' lmm.data <- read.table("http://www.unt.edu/rss/class/Jon/R_SC/Module9/lmm.data.txt",
-%'    header=TRUE, sep=",", na.strings="NA", dec=".", strip.white=TRUE)
-%' summary(lmm.data)
-%' head(lmm.data)
-%' nrow(lmm.data)
-%' 
-%' # ... omited lm and glm examples ...
-%' 
-%' # Note below, class is nested within school, class is 'under' school. Random effects are specified inside
-%' # parentheses and can be repreated measures, interaction terms, or nested (as is the case here). Simple
-%' # interactions simply use the colon separator: (1|school:class).
-%' lmm.1 <- lmer(extro ~ open + social + class + (1|school/class), data = lmm.data)
-%' summary(lmm.1)
-%' 
-%' lmm.2 <- lmer(extro ~ open + agree + social + class + (1|school/class), data = lmm.data)
-%' summary(lmm.2)
-%' 
-%' # To extract the estimates of the fixed effects parameters.
-%' 
-%' fixef(lmm.2)
-%' 
-%' # To extract the estimates of the random effects parameters.
-%' 
-%' ranef(lmm.2)
-%' 
-%' # To extract the coefficients for each group of the random effect factor (class = 2 groups + school
-%' # = 2 groups == 4 groups).
-%' 
-%' coef(lmm.2)
-%' 
-%' coef(lmm.2)$'class:school'
-%' 
-%' # To extract the predicted values (based on the fitted model).
-%' 
-%' yhat <- fitted(lmm.2)
-%' summary(yhat)
-%' 
-%' # To extract the residuals (errors); and summarize, as well as plot them.
-%' 
-%' residuals <- resid(lmm.2)
-%' summary(residuals)
-%' hist(residuals)
-%' 
-%' ### One other thing worth taking a look at is the Intra Class Correlation.
-%' 
-%' # First, run the 'null' model (which includes just the intercepts and the random effect for the highest level
-%' # of the nesting variables; in this example 'school'.
-%' 
-%' lmm.null <- lmer(extro ~ 1 + (1|school), data = lmm.data)
-%' summary(lmm.null)
-%' 
-%' # Notice the variance component estimates for the random effect. If we add these together, then
-%' # divide that total by the 'school' variance estimate; we get the ICC
-%' 
-%' 95.8720 + 7.1399
-%' 
-%' 95.8720 / 103.0119
-%' 
-%' # This indicates that 93.06886% of the variance in 'extro' can be "explained" by school
-%' # group membership (verified below using Bliese's multilevel package).
-%' 
-%' # ICC1 and ICC2 as described by Bliese.
-%' 
-%' library(multilevel)
-%' 
-%' aov.1 <- aov(extro ~ school, lmm.data)
-%' summary(aov.1)
-%' 
-%' # Below (ICC1) indicates that 93.07% of the variance in 'extro' can be "explained" by school
-%' # group membership.
-%' 
-%' ICC1(aov.1)
-%' 
-%' # The ICC2 value (below) of .9996 indicates that school groups can be very reliably differentiated in terms of
-%' # 'extro' scores.
-%' 
-%' ICC2(aov.1)
-%' 
-%' detach("package:multilevel")
-%' #### Simulating the Posterior Distribution of Predicted Values.
-%' # To simulate a posterior distribution you must load the 'arm' package
-%' # and use the 'sim' function. Note: n = 100 is the default for 'sim'.
-%' 
-%' library(arm)
-%' 
-%' sim.100 <- sim(lmm.2, n = 100)
-%' 
-%' # Show the structure of objects in the 'sim' object.
-%' 
-%' str(sim.100)
-%' 
-%' # Fixed effect parameter estimates resulting from the 'sim' function applied to the fitted model (lmm.3).
-%' 
-%' fe.sim <- fixef(sim.100)
-%' fe.sim
-%' 
-%' # Random effect parameter estimates resulting from the 'sim' function applied to the fitted model (lmm.3).
-%' 
-%' re.sim <- ranef(sim.100)
-%' re.sim[[1]]  # For "class:school" random effect.
-%' re.sim[[2]]  # For "school" random effect.
-%' 
-%' # To get predicted values from the posterior distribution, use the 'fitted' function.
-%' 
-%' yhat.lmm.2 <- fitted(sim.100, lmm.2)
-%' head(yhat.lmm.2)
-%' tail(yhat.lmm.2)
-%' 
-%' # The above object (yhat.lmm.2) is a matrix of 100 (simulations) by 1200 participants.
-%' # In this matrix, each row represents a participant and each column represents a simulated
-%' # predicted value for the outcome variable of our lmm.2 model.
-%' # Therefore, the yhat.lmm.2 object can be used to create credible intervals for
-%' # each participant (i.e. individual level).
-%' 
-%' quantile(yhat.lmm.2, probs = c(.025, .985))  # For first participant (i.e. row 1).
-%' 
-%' # We can also create a data frame with the quantiles for every participant.
-%' 
-%' quant.mat <- data.frame(matrix(rep(NA, 1200*2), ncol = 2))
-%' names(quant.mat) <- c("2.5%", "98.5%")
-%' quant.mat[,1] <- apply(yhat.lmm.2, 1, quantile, probs = .025)
-%' quant.mat[,2] <- apply(yhat.lmm.2, 1, quantile, probs = .985)
-%' 
-%' head(quant.mat, 25)
-%' 
-%' detach("package:arm")
-%' 
-%' #####################################################################################################################
-%' #####################################################################################################################
-%' 
-%' # NOTE: These results will not match up with the same procedures on the same data, run in SPSS (Linear Mixed Models)
-%' # or run in SAS (PROC MIXED); although SPSS and SAS match one another. It has been discovered that the descrepancy
-%' # is due to different reference coding of the categorical variables when in SPSS and SAS compared to the 'lme4'
-%' # package and 'lmer' function. Essentially, all the R functions used here (in this script) code categorical
-%' # factors / variables so that the reference category is the category with the LOWEST numerical value (or
-%' # alphabetically first letter). SPSS and SAS both use the opposite strategy; they code
-%' # categorical factors / variables so that the reference category is the category with the HIGHEST numerical
-%' # value (or alphabetically last letter). This is important to note because, the SPSS/SAS
-%' # Mixed Effects model output produces an intercept term for the fixed effects which is substantially different
-%' # from the intercept term for the fixed effects produced by the 'lme4' package; and of course, with different
-%' # intercepts comes different predicted values based on the model. If interested in getting SPSS or SAS output
-%' # to match what is produced by this script, then simply reverse code the values of the categorical variables
-%' # when the data is imported to SPSS or SAS. Meaning, for instance with the class variable; any case with a value
-%' # of "a" would be changed to a value of "d" and vice versa, any case with a value of "c" would be changed to a
-%' # value of "b" and vice versa.
-%' 
-%' 
-%' detach("package:lme4")
-%' detach("package:Matrix")
-%' detach("package:Rcpp")
-%' 
-%' ####################################################################################
-%' 
-%' 
-%' ######## Additional Considerations ########
-%' ######           CENTERING           ######
-%' 
-%' # In many situation in social science, the predictor variables we deal with do not have a meaningful (or true) zero
-%' # point. For instance, a person is not going to have a intelligence test score of zero. In these
-%' # situations it is common to do some type of Centering. Grand mean centering is much more common than Group
-%' # mean centering because, Group mean centering can change the estimation, fit, and interpretation of hierarchical
-%' # linear models. Grand mean centering results in equivalent models as would be the case if raw scores were used.
-%' # Using either method, the mean of the predictor variable becomes zero after subtracting the Grand mean
-%' # or Group mean from each score. Grand mean centering predictor variables at level one often makes interpretation
-%' # easier and can decrease multicollinearity.
-%' 
-%' 
-%' #########  REFERENCES & RESOURCES  #########
-%' 
-%' # Akaike, H. (1974). A new look at the statistical model identification. I.E.E.E. Transactions on Automatic Control, AC 19, 716 – 723.
-%' # Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Akaike_1974.pdf
-%' 
-%' # Bartko, J. J. (1976). On various intraclass correlation reliability coefficients. Psychological Bulletin, 83, 762-765.
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Bartko_1976.pdf
-%' 
-%' # Bates, D., & Maechler, M. (2010). Package ‘lme4’. Reference manual for the package, available at:
-%' # http://cran.r-project.org/web/packages/lme4/lme4.pdf
-%' 
-%' # Bates, D. (2010). Linear mixed model implementation in lme4. Package lme4 vignette, available at:
-%' # http://cran.r-project.org/web/packages/lme4/vignettes/Implementation.pdf
-%' 
-%' # Bates, D. (2010). Computational methods for mixed models. Package lme4 vignette, available at:
-%' # http://cran.r-project.org/web/packages/lme4/vignettes/Theory.pdf
-%' 
-%' # Bates, D. (2010). Penalized least squares versus generalized least squares representations of linear mixed models. Package lme4
-%' # vignette, available at:
-%' # http://cran.r-project.org/web/packages/lme4/vignettes/PLSvGLS.pdf
-%' 
-%' # Bliese, P. (2009). Multilevel modeling in R: A brief introduction to R, the multilevel package and the nlme package. Available at:
-%' # http://cran.r-project.org/doc/contrib/Bliese_Multilevel.pdf
-%' 
-%' # Draper, D. (1995). Inference and hierarchical modeling in the social sciences. Journal of Educational and Behavioral Statistics, 20(2),
-%' # 115 - 147. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Draper_1995.pdf
-%' 
-%' # Fox, J. (2002). Linear mixed models: An appendix to “An R and S-PLUS companion to applied regression”. Available at:
-%' # http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-mixed-models.pdf
-%' 
-%' # Gelman, A. (2005). Analysis of variance -- why it is more important than ever. The Annals of Statistics, 33(1), 1 -- 53. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Gelman_2005.pdf
-%' 
-%' # Hofmann, D. A., Griffin, M. A., & Gavin, M. B. (2000). The application of hierarchical linear modeling to organizational research.
-%' # In K. J. Klein (Ed.), Multilevel theory, research, and methods in organizations: Foundations, extensions, and new directions (p. 467 - 511).
-%' # San Francisco, CA: Jossey-Bass. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Hofmann_2000.pdf
-%' 
-%' # Raudenbush, S. W. (1995). Reexamining, reaffirming, and improving application of hierarchical models. Journal of Educational and Behavioral
-%' # Statistics, 20(2), 210 - 220. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Raudenbush_1995.pdf
-%' 
-%' # Raudenbush, S. W. (1993). Hierarchical linear models and experimental design. In L. Edwards (Ed.), Applied analysis of variance in behavioral
-%' # science (p. 459 - 496). New York: Marcel Dekker. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Raudenbush_1993.pdf
-%' 
-%' # Rogosa, D., & Saner, H. (1995). Longitudinal data analysis examples with random coefficient models. Journal of Educational and Behavioral
-%' # Statistics, 20(2), 149 - 170. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Rogosa_1995.pdf
-%' 
-%' # Schwarz, G. (1978). Estimating the dimension of a model. Annals of Statistics, 6, 461 – 464. Available at:
-%' # http://www.unt.edu/rss/class/Jon/MiscDocs/Schwarz_1978.pdf
-%' 
-%' @
-%' \end{frame}
-%' % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Test your knowledge}
+
+\hwydt{Use an ANOVA to test whether students pretest scores differed based on whether they were assigned to the intervention}
+\pause
+<<>>=
+model <- lm(STSE0 ~ intervention, data=atlas)
+library(car)
+Anova(model, type=3) # type 3 sums of squares
+@
+
+\end{frame}
+% -------------------------------------------------------------
 
 \end{document}
