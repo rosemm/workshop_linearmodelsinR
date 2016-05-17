@@ -1,0 +1,42 @@
+---
+title: "workshop example 1"
+author: "Rose Maier"
+date: "May 17, 2016"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(knitr) # for formatting output with kable() function
+library(dplyr) # for data wrangling
+library(tidyr) # for data wrangling
+library(ggplot2) # for plotting
+library(haven) # for the read_sav() function
+```
+
+## Data prep
+
+```{r}
+
+```
+
+## Running the model
+
+```{r}
+
+```
+
+## Summarizing the results
+
+```{r}
+
+```
+
+## Plotting
+
+```{r}
+
+```
+
+
