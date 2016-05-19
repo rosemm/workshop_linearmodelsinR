@@ -278,7 +278,7 @@ str(osf)
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Check your data}
 
-We'll want to test our glm against a null model, which means any missing data on our predictor (Year) will be problematic --- it means the null model and the test model won't be on the same data. \\
+We'll want to test our glm against a null model, which means any missing data on our predictor (date) will be problematic --- it means the null model and the test model won't be on the same data. \\
 <<>>=
 ?na.omit
 @
@@ -321,7 +321,7 @@ summary(osf.lgt)
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Writing the formula}
 
-Did it become more likely for articles to provide a data statement (statement.included) over time (Year)?
+Did it become more likely for articles to provide a data statement (statement.included) over time (date)?
 \bigskip
 \pause
 In modeling functions in R, the model is usually provided as a formula, like: outcome ~ predictor1 + predictor2 etc. How should we specify the formula for this test?
@@ -547,7 +547,7 @@ ggplot(osf.lgt, aes(x=date, y=as.numeric(statement.included)-1)) +
 
 \wwtd{\\ What question would this model test?}
 << model2 >>=
-logit.model2 <- glm(statement.included ~ date*Journal, data=osf.lgt2,
+logit.model2 <- glm(statement.included ~ date*Journal, data=osf.lgt,
                    family=binomial(link="logit"),
                    na.action=na.exclude)
 @
