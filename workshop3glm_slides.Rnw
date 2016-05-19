@@ -149,7 +149,7 @@ The strategy for transforming your outcome depends on what its distribution is l
 
 \begin{itemize}
   \item<1-> Unlike linear models, there is not a single analytic solution to glms
-  \item<2-> The computer uses brute force to find a solution, iterating over tons of combinations of parameter estmiates and seeing which gives the bets model fit
+  \item<2-> The computer uses brute force to find a solution, iterating over tons of combinations of parameter estimates and seeing which gives the bets model fit
   \item<3-> This means the results are not exact --- they depend on the sampling algorithm being used --- so you might see very small changes if you run the model again, or if you run it on other software
   \item<4-> There's a risk that your model won't converge if it's too complicated and you don't have enough data
 \end{itemize}
@@ -286,7 +286,8 @@ We'll want to test our glm against a null model, which means any missing data on
 
 <<>>=
 osf.lgt <- osf %>% 
-  select(date, statement.included) %>% 
+  select(statement.included, date, Journal) %>% 
+  filter(Journal != "Infant behavior & development") %>% 
   na.omit()
 
 summary(osf.lgt)
@@ -350,7 +351,7 @@ glm(statement.included ~ date, data=osf.lgt,
 
 Let's run the model.
 << model >>=
-logit.model <- glm(statement.included ~ date, data=osf.lgt,
+logit.model1 <- glm(statement.included ~ date, data=osf.lgt,
                    family=binomial(link="logit"),
                    na.action=na.exclude)
 @
@@ -363,9 +364,9 @@ logit.model <- glm(statement.included ~ date, data=osf.lgt,
 
 Let's look at that object we just created:
 <<>>=
-logit.model
+logit.model1
 
-str(logit.model)
+str(logit.model1)
 @
 
 \end{frame}
@@ -387,7 +388,7 @@ str(logit.model)
 \begin{frame}[fragile]{Summarize the model}
 
 <<>>=
-summary(logit.model)
+summary(logit.model1)
 @
 \pause
 Note that R prints the results such that the first level of the outcome variable is a failure, so these results articulate the probability of the second level of statement.included happening. \\
@@ -404,7 +405,7 @@ levels(osf.lgt$statement.included)
 
 add this code to your .rmd file, and make sure you've set your knitr options to results='asis'
 <<>>=
-model.sum <- summary(logit.model)
+model.sum <- summary(logit.model1)
 pander(model.sum)
 @
 
@@ -416,7 +417,7 @@ pander(model.sum)
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Testing a series of models}
 
-It's typical to test a series of glms, beginnning with a null model (no predictors).
+It's typical to test a series of glms, beginning with a null model (no predictors).
 << >>=
 logit.model0 <- glm(statement.included ~ 1, data=osf.lgt,
                     family=binomial(link="logit"),
@@ -426,7 +427,7 @@ logit.model0 <- glm(statement.included ~ 1, data=osf.lgt,
 Use anova() to test for a significant improvement in model fit from the null model to our test model:
 
 <<>>=
-anova(logit.model0, logit.model, test="Chisq") 
+anova(logit.model0, logit.model1, test="Chisq") 
 @
 
 Since we want to test for a significant change in model fit (deviance), we'll used a chi-squared test.
@@ -436,10 +437,10 @@ Since we want to test for a significant change in model fit (deviance), we'll us
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Classification tables}
 
-For logistic regresion, it's nice to have a classification table showing your model's predicted outcomes compared to the actual outcome.
+For logistic regression, it's nice to have a classification table showing your model's predicted outcomes compared to the actual outcome.
 \pause
 << predict >>=
-osf.lgt$pred <- predict(logit.model, 
+osf.lgt$pred1 <- predict(logit.model1, 
                                 osf.lgt, 
                                 type="response") 
 
@@ -459,8 +460,8 @@ Set a probability cutoff (let's use .5). Probabilities above this will be classi
 osf.lgt$clas0 <- ifelse(osf.lgt$pred0 >= .5, 1,
                                 ifelse(osf.lgt$pred0 < .5, 0, 
                                        NA))
-osf.lgt$clas <- ifelse(osf.lgt$pred >= .5, 1,
-                                ifelse(osf.lgt$pred < .5, 0, 
+osf.lgt$clas1 <- ifelse(osf.lgt$pred1 >= .5, 1,
+                                ifelse(osf.lgt$pred1 < .5, 0, 
                                        NA))
 @
 
@@ -469,12 +470,12 @@ osf.lgt$clas <- ifelse(osf.lgt$pred >= .5, 1,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Classification tables}
 
-Convert the new classifcation variables to factors, for cleaner output in the crosstabs.
+Convert the new classification variables to factors, for cleaner output in the crosstabs.
 << clas_factor >>=
 osf.lgt$clas0 <- factor(osf.lgt$clas0,
                                 levels=c(1,0),
                                 labels=c("yes", "no"))
-osf.lgt$clas <- factor(osf.lgt$clas,
+osf.lgt$clas1 <- factor(osf.lgt$clas1,
                                 levels=c(1,0),
                                 labels=c("yes", "no"))
 @
@@ -482,7 +483,7 @@ osf.lgt$clas <- factor(osf.lgt$clas,
 << crosstabs >>=
 xtabs(~ statement.included + clas0, data=osf.lgt)
 
-xtabs(~ statement.included + clas, data=osf.lgt)
+xtabs(~ statement.included + clas1, data=osf.lgt)
 @
 
 \seealso{gmodels::CrossTable(), which makes fancier crosstabs}
@@ -540,6 +541,60 @@ ggplot(osf.lgt, aes(x=date, y=as.numeric(statement.included)-1)) +
 \end{frame}
 % -------------------------------------------------------------
 
+\subsection{Additional predictors}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{The model}
+
+\wwtd{\\ What question would this model test?}
+<< model2 >>=
+logit.model2 <- glm(statement.included ~ date*Journal, data=osf.lgt2,
+                   family=binomial(link="logit"),
+                   na.action=na.exclude)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Testing against simpler models}
+
+<<>>=
+anova(logit.model0, logit.model1, logit.model2, test="Chisq") 
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Getting predicted values}
+
+<<>>=
+osf.lgt$pred2 <- predict(logit.model2, 
+                                osf.lgt, 
+                                type="response") 
+osf.lgt$clas2 <- ifelse(osf.lgt$pred2 >= .5, 1,
+                                ifelse(osf.lgt$pred2 < .5, 0, 
+                                       NA))
+osf.lgt$clas2 <- factor(osf.lgt$clas2,
+                                levels=c(1,0),
+                                labels=c("yes", "no"))
+
+xtabs(~ statement.included + clas2, data=osf.lgt)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+<< plot_predict2 >>=
+ggplot(osf.lgt, aes(x=date, y=as.numeric(statement.included)-1, 
+                    color=Journal)) + 
+  geom_point( alpha=.3 ) + 
+  geom_line( aes(y=pred2, x=date) ) +
+  labs(y="Probability of providing a data statement")
+@
+
+\end{frame}
+% -------------------------------------------------------------
+
+
 \section{Other glms}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Other glms}
@@ -553,17 +608,48 @@ hist(osf$Number.of.experiments)
 @
 \pause
 There are a couple reasonable options for a link function here. Let's go with Poisson.
+\pause
+<<>>=
+osf.pois <- osf %>% 
+  select(Number.of.experiments, Journal) %>% 
+  filter(Journal != "Infant behavior & development") %>% 
+  na.omit()
+@
+
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Other glms}
 
-<< pos_model >>=
+\hwydt{Write the glm call to model number of experiments by journal, using a Poisson link.}
 
+<< pos_model >>=
+pois.model <- glm(Number.of.experiments ~ Journal, data=osf.pois,
+                   family=poisson(link = "log"),
+                   na.action=na.exclude)  
 @
 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Other glms}
 
+<<>>=
+ggplot(osf.pois, aes(x=Number.of.experiments)) + 
+  geom_histogram() 
+@
+\pause
+Show Journal info as well
+<<>>=
+ggplot(osf.pois, aes(x=Number.of.experiments, fill=Journal)) + 
+  geom_histogram()
+
+ggplot(osf.pois, aes(x=Number.of.experiments, fill=Journal)) + 
+  geom_density(alpha=.3, adjust=2) 
+@
+\pause
+Try adding facet wrap by Journal as well, to put each density plot in its own facet.
 \end{frame}
 % -------------------------------------------------------------
 
