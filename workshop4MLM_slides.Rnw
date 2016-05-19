@@ -271,8 +271,8 @@ If you want R to find something on your computer, you have three options:
 I'll use option 3, specifying the file path for the file when I tell R to read it in. 
 \pause
 \bigskip
-Find the file on your computer, get its location, and add that file path to your read\_sav command:
-<< >>=
+Find the file on your computer, get its location, and add that file path to your read\_sav command:\\
+<< data >>=
 atlas <- read_sav("data/ATLAS.sav")
 @
 
@@ -289,6 +289,20 @@ If you have repeated measures data, then each row should be one observation (i.e
 \pause
 <<>>=
 ?gather
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Formatting your data}
+
+Also, for nested data, make sure your grouping variable is a factor:
+<<>>=
+str(atlas)
+@
+\pause
+<<>>=
+atlas$schoolid <- as.factor(atlas$schoolid)
 @
 
 \end{frame}
@@ -334,9 +348,10 @@ By default, it will use all of the observations in the data frame.
 \begin{frame}[fragile]{Quick review: lm}
 
 Let's say you want to model the effect of the intervention (intervention) on post-test strength-training self-efficacy (STSE1), controlling for pretest strength-training self-efficacy (STSE0). Allow for the fact that the effect of pretest scores on posttets scores may be different for students who did vs. didn't get the intervention.
+
 \hwydt{Write the formula for that model in lm()}
 \pause
-<<>>=
+<< lm >>=
 lm(STSE1 ~ intervention * STSE0, data=atlas,
    na.action = na.exclude)
 @
@@ -348,19 +363,117 @@ MLM to the rescue.
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
+\begin{frame}[fragile]{Null model for ICC}
+
+<<>>=
+model0 <- lmer(STSE1 ~ 1 + 
+                 (1|schoolid), 
+              data = atlas,
+              na.action = na.exclude)
+
+# the variance components
+varcom <- as.data.frame(VarCorr(model0))
+@
+
+\pause
+<< icc >>=
+L2var <- varcom$vcov[1]
+L1var <- varcom$vcov[2]
+
+icc <- L2var/(L2var+L1var)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
 \begin{frame}[fragile]{Model 1: Random intercepts}
 
-text
+First, let's just specify a random intercepts model.\\
+\pause
+
+<<>>=
+model1 <- lmer(STSE1 ~ intervention * STSE0 + 
+                 (1|schoolid), 
+              data = atlas,
+              na.action = na.exclude)
+@
+\pause
+The random effects are the last term in the model, in parentheses. 
+In this case, we have one random factor, schoolid. \\
+In the parentheses before the fence |, you write out all of the effects in your model that you want to vary by that random factor. In this case, it's just a 1, representing the intercept. 
+
+\learnmore{ A great answer on stackexchange: \url{http://stats.stackexchange.com/questions/31569/questions-about-how-random-effects-are-specified-in-lmer}}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Model 1: Random intercepts}
+
+<<>>=
+summary(model1)
+@
+
+Notice there are no p-values for the fixed effects. That's because df in MLM are nuts, and there's no agreed upon way to assess significance. 
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Model 1: Random intercepts}
+If you load the lmerTest package, it will add information about significance tests to the lmer object, using Satterthwate's approximations for df.
+<<>>=
+library(lmerTest)
+
+model1 <- lmer(STSE1 ~ intervention * STSE0 + 
+                 (1|schoolid), 
+              data = atlas,
+              na.action = na.exclude)
+
+summary(model1)
+@
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Model 2: Adding random slopes}
 
-text
+When you have more than one random component, you can also estimate the covariance(s) between them, or you can restrict the covariances to be 0. \\
+\pause
+This estimates the covariance between slope for STSE0 and the intercept:
+<<>>=
+model2 <- lmer(STSE1 ~ intervention * STSE0 + 
+                 (1 + STSE0|schoolid), 
+              data = atlas,
+              na.action = na.exclude)
+@
 
 \end{frame}
-% % -------------------------------------------------------------
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Model 2: Adding random slopes}
+
+And this constrains the covariance to be 0:
+<<>>=
+model2.nocov <- lmer(STSE1 ~ intervention * STSE0 + 
+                 (1|schoolid) + (0 + STSE0|schoolid), 
+              data = atlas,
+              na.action = na.exclude)
+@
+
+\seealso{for more control over random component coavriance structure, see the nlme package}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Model 2: Adding random slopes}
+
+<<>>=
+anova(model1, model2)
+@
+\pause 
+Note that the recommendation from the folks who wrote lme4 is to only use deviance change tests like this when the models have all of the same fixed effects (just the random effects changing).
+
+
+\end{frame}
+% -------------------------------------------------------------
 
 
 \subsection{Example 2: Longitudinal data}
@@ -383,7 +496,7 @@ text
 
 
 \end{frame}
-% % -------------------------------------------------------------
+% -------------------------------------------------------------
 
 
 \subsection{Example 3: Random effect}
