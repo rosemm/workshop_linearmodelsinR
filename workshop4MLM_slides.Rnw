@@ -89,12 +89,7 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
    \item<1-> Focus on the R code rather than the stats --- if you'd like to learn about the stats behind MLM more deeply, I can recommend several excellent classes and texts.
     \item<2-> Lots of practice. Learn R by using R!
     \item<3-> We'll be using primarily dplyr and tidyr for data wrangling, and ggplot2 for plotting
-    \item<4-> For those of you who are learning/psych geeks...
-    \begin{itemize}
-	    \item<5-> interleaved training and progressive alignment
-	    \item<6-> realistic practice problems from the two perspectives you're most likely to encounter in real life
-	    \item<7-> consistent color-coding of different types of information 
-	    \end{itemize}
+    \item<4-> Color-coded content, to help you keep track of the most important pieces
   \end{itemize}
 
 \end{frame}
@@ -116,13 +111,15 @@ Keep an eye out for...
 % -------------------------------------------------------------
 \begin{frame}[fragile]{}
 
-If you don't already have dplyr, tidyr, and ggplot2 installed, do that now:
+If you don't already have dplyr, tidyr, haven, and ggplot2 installed, do that now:
 <<>>=
 install.packages("ggplot2")
+install.packages("haven")
 install.packages("dplyr")
 install.packages("tidyr")
 
 library("ggplot2")
+library("haven")
 library("dplyr")
 library("tidyr")
 @
@@ -155,7 +152,7 @@ First, a note on terminology. The statistical technique we'll be discussing toda
 \begin{itemize}
     \item<1-> Nested data
     \item<2-> Repeated measures / longitudinal data
-    \item<3-> Random effects (when you want to generalize from a sample to a population)
+    \item<3-> Random effects (when you want to generalize from a sample to a population, for more than just the subjects in your model)
   \end{itemize}
 
 \end{frame}
@@ -165,20 +162,7 @@ First, a note on terminology. The statistical technique we'll be discussing toda
 
 Mulitlevel modeling is powerful and flexible and cool, and really widely applicable. 
 That doesn't mean it's the only right way to analyze these kinds of data.
-There are often many acceptable analysis techniques for a given problem, each with different strengths and weaknesses depending on your situation.
-\bigskip
-\pause
-But having the tools necessary to run a multilevel model is definitely a good idea!
-
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{What do you need to think about when chosing MLM software?}
-
-\begin{itemize}
-    \item<1-> logistics (collaborators' preferences, price, availability, etc.)
-    \item<2-> 
-  \end{itemize}
+There are often many acceptable analysis techniques for a given problem, each with different strengths and weaknesses depending on your situation. 
 
 \end{frame}
 % -------------------------------------------------------------
@@ -207,9 +191,9 @@ library("lme4")
 \pause
 Remember...
 \begin{itemize}
-  \item<1-> When you run install.packages(), R contacts CRAN to get the package you want, so you need an internet connection for it to work.
-  \item<2-> You only need to install each package once (and again whenever you want updates for it), and it will be saved on your computer so you can use it offline.
-  \item<3-> You need to load each package you want to use again in each R session. 
+  \item When you run install.packages(), R contacts CRAN to get the package you want, so you need an internet connection for it to work.
+  \item You only need to install each package once (and again whenever you want updates for it), and it will be saved on your computer so you can use it offline.
+  \item You need to load each package you want to use again in each R session. 
 \end{itemize}
 
 \end{frame}
@@ -289,15 +273,23 @@ I'll use option 3, specifying the file path for the file when I tell R to read i
 \bigskip
 Find the file on your computer, get its location, and add that file path to your read\_sav command:
 << >>=
-atlas <- read_sav("/Users/TARDIS/Desktop/ATLAS.sav")
+atlas <- read_sav("data/ATLAS.sav")
 @
 
 \end{frame}
 % -------------------------------------------------------------
+\setbeamercovered{invisible}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Formatting your data}
 
-text
+Your data need to be in "long" format, where each row is just one observation (i.e., one paritcipant). 
+If you have repeated measures data, then each row should be one observation (i.e., one timepoint), not one participant.
+
+\hwydt{ \\ Transform a dataframe from wide to long using dplyr/tidyr commands. }
+\pause
+<<>>=
+?gather
+@
 
 \end{frame}
 % -------------------------------------------------------------
@@ -310,16 +302,15 @@ Why center your variables?
   \item<2-> Centering often makes interpretation easier, if 0 isn't an interesting/meaningful value on your scales.
   \item<3-> Sometimes it can make your model converge a little faster, since the intercept won't jump around as much iteration to iteration.
   \item<4-> It doesn't hurt anything, so might as well!
+  \item<5-> Centering only makes sense for continuous variables. Be careful to never try to center a categorical predictor.
 \end{itemize}
-\pause
-Centering only makes sense for continuous variables. Be careful to never try to center a categorical predictor.
 
 \end{frame}
-% % -------------------------------------------------------------
+% -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Subset analysis}
 
-One lovely thing about the lmer() function is that it includes a subset argument --- that means if you only want to run the model on some of your observations and not others, you don't have to save a new data frame for that, you can just sepcify the subset right in your lmer() command!
+One lovely thing about the lmer() function is that it includes a subset argument --- that means if you only want to run the model on some of your observations and not others, you don't have to save a new data frame for that, you can just sepcify the subset right in your lmer() command!\\
 \bigskip
 \pause
 By default, it will use all of the observations in the data frame.
@@ -327,7 +318,7 @@ By default, it will use all of the observations in the data frame.
 \end{frame}
 % -------------------------------------------------------------
 
-\subsection{Example 1: Nested data}
+\subsection{Example: Nested data}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[
@@ -337,11 +328,22 @@ By default, it will use all of the observations in the data frame.
     subsectionstyle=show/shaded,
     ]
 \end{frame}
-% % -------------------------------------------------------------
+% -------------------------------------------------------------
+\setbeamercovered{invisible}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Quick review: lm}
 
-text
+Let's say you want to model the effect of the intervention (intervention) on post-test strength-training self-efficacy (STSE1), controlling for pretest strength-training self-efficacy (STSE0). Allow for the fact that the effect of pretest scores on posttets scores may be different for students who did vs. didn't get the intervention.
+\hwydt{Write the formula for that model in lm()}
+\pause
+<<>>=
+lm(STSE1 ~ intervention * STSE0, data=atlas,
+   na.action = na.exclude)
+@
+\pause
+But 1226 students in our dataset are in 31 schools. 
+The observations are not independent! 
+MLM to the rescue.
 
 \end{frame}
 % -------------------------------------------------------------
@@ -373,9 +375,12 @@ text
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{title}
+\begin{frame}[fragile]{Additional resources about repeated measures}
 
-text
+\begin{itemize}
+  \item This excellent blog post describes when a repeated measures ANOVA won't work and what you can do instead (hint, in most cases, a mixed effects model is a great solution) \url{http://www.theanalysisfactor.com/when-repeated-measures-anova-not-work-for-repeated-measures-data/}
+\end{itemize}
+
 
 \end{frame}
 % % -------------------------------------------------------------
