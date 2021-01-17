@@ -1,0 +1,111 @@
+---
+title: "workshop example 1"
+author: "Rose Maier"
+date: "May 17, 2016"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, results='asis' )
+
+library(dplyr) # for data wrangling
+library(ggplot2) # for plotting
+library(pander) # for formatting output from model summaries
+```
+
+## Data prep
+
+```{r}
+osf <- read.csv("data/OSF_badges.csv")
+
+osf$date <- as.Date(osf$date)
+```
+
+```{r}
+osf.lgt <- osf %>% 
+  select(date, statement.included, Journal) %>% 
+  filter(Journal != "Infant behavior & development") %>% 
+  na.omit()
+```
+
+
+## Running the model
+
+```{r}
+logit.model1 <- glm(statement.included ~ date, data=osf.lgt,
+                   family=binomial(link="logit"),
+                   na.action=na.exclude)
+```
+
+```{r null_model}
+logit.model0 <- glm(statement.included ~ 1, data=osf.lgt,
+                    family=binomial(link="logit"),
+                    na.action=na.exclude)
+```
+
+
+```{r predictions }
+# get predictions from model
+osf.lgt$pred1 <- predict(logit.model, 
+                                osf.lgt, 
+                                type="response") 
+
+osf.lgt$pred0 <- predict(logit.model0, 
+                                 osf.lgt, 
+                                 type="response") 
+
+# classify predictions as yes or no based on a cutoff of .5
+osf.lgt$clas0 <- ifelse(osf.lgt$pred0 >= .5, 1,
+                                ifelse(osf.lgt$pred0 < .5, 0, 
+                                       NA))
+osf.lgt$clas <- ifelse(osf.lgt$pred >= .5, 1,
+                                ifelse(osf.lgt$pred < .5, 0, 
+                                       NA))
+# convert to factors for nicer output
+osf.lgt$clas0 <- factor(osf.lgt$clas0,
+                                levels=c(1,0),
+                                labels=c("yes", "no"))
+osf.lgt$clas <- factor(osf.lgt$clas,
+                                levels=c(1,0),
+                                labels=c("yes", "no"))
+```
+
+
+```{r}
+null.xtbs <- xtabs(~ statement.included + clas0, data=osf.lgt) # null model
+pander(null.xtbs)
+
+test.xtbs <- xtabs(~ statement.included + clas, data=osf.lgt) # test model
+pander(test.xtbs)
+```
+
+
+## Summarizing the results
+
+```{r}
+levels(osf.lgt$statement.included) # to interpret the direction of the effect
+
+model.sum <- summary(logit.model)
+pander(model.sum)
+```
+
+```{r}
+deviance.change <- anova(logit.model0, logit.model, test="Chisq") 
+pander(deviance.change)
+```
+
+
+## Plotting
+
+```{r}
+ggplot(osf.lgt, aes(x=date, y=statement.included)) + 
+  geom_point(alpha=.3)
+```
+Note that R counts factor levels starting at 1, so "no" and "yes" are plotted at 1 and 2 respectively. To line them up with the predicted values from the model, we need to subtract 1.
+```{r}
+ggplot(osf.lgt, aes(x=date, y=as.numeric(statement.included)-1, color=Journal)) + 
+  geom_point( alpha=.3 ) + 
+  geom_line( aes(y=pred2, x=date) ) +
+  labs(y="Probability of providing a data statement")
+```
+

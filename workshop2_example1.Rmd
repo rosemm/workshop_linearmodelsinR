@@ -34,7 +34,8 @@ atlas$intervention <- factor(atlas$intervention,
 ## Running the model
 
 ```{r}
-model1 <- lm( STSE1 ~ STSE0 + intervention, data=atlas)
+
+model1 <- lm( STSE1 ~ intervention*STSE0, data=atlas, na.action=na.exclude)
 ```
 
 ## Summarizing the results
@@ -45,9 +46,28 @@ pander(model.sum)
 ```
 
 ## Plotting
+Plotting using ggplot2's built in lm estimator, via geom_smooth:
+```{r}
+ggplot(atlas, aes(x=STSE0, y=STSE1)) +
+  geom_point(alpha=.3) + 
+  facet_wrap(~intervention)
+
+ggplot(atlas, aes(x=STSE0, y=STSE1,
+                  color=intervention, fill=intervention)) +
+  geom_point(alpha=.3) +
+  geom_smooth(method="lm")
+```
+Plotting using exactly what your model outputs using the predict() function. Note that in this case, ggplot2 and your model are coming up with exactly the same line, which is typical. It's just nice to know how to use predict() to get the regression line(s) from your model in case you want to double-check that ggplot2 is doing what you think it is, or if you want to plot a line that is different from what ggplot2 gives you (for example, if you didn't include an interaction in your model, you would need to plot your own line since ggplot2 is modeling the interaction by default.)
 
 ```{r}
+atlas$pred <- predict(model1, atlas)
 
+ggplot(atlas, aes(x=STSE0, y=STSE1, 
+                  color=intervention, fill=intervention)) + 
+  geom_point(alpha=.3) + 
+  geom_line(aes(y=pred, x=STSE0, color=intervention)) + 
+  labs(x="pretest strength training self-efficacy",
+       y="posttest strength training self-efficacy")
 ```
 
 

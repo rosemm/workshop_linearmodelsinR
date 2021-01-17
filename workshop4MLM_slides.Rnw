@@ -70,7 +70,7 @@
 
 <<setup, include=FALSE, echo=FALSE>>=
 library("knitr")
-opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALSE)
+opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=TRUE)
 @
 
 % very important to use option [fragile] for frames containing code output!
@@ -303,6 +303,10 @@ str(atlas)
 \pause
 <<>>=
 atlas$schoolid <- as.factor(atlas$schoolid)
+
+atlas$intervention <- factor(atlas$intervention, 
+                             levels=c(0,1),
+                             labels=c("no", "yes"))
 @
 
 \end{frame}
@@ -318,6 +322,15 @@ Why center your variables?
   \item<4-> It doesn't hurt anything, so might as well!
   \item<5-> Centering only makes sense for continuous variables. Be careful to never try to center a categorical predictor.
 \end{itemize}
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Centering}
+
+
+<< scale >>=
+atlas$STSE0c <- atlas$STSE0 - mean(atlas$STSE0, na.rm=TRUE)
+@
 
 \end{frame}
 % -------------------------------------------------------------
@@ -352,7 +365,7 @@ Let's say you want to model the effect of the intervention (intervention) on pos
 \hwydt{Write the formula for that model in lm()}
 \pause
 << lm >>=
-lm(STSE1 ~ intervention * STSE0, data=atlas,
+lm(STSE1 ~ intervention * STSE0c, data=atlas,
    na.action = na.exclude)
 @
 \pause
@@ -392,7 +405,7 @@ First, let's just specify a random intercepts model.\\
 \pause
 
 <<>>=
-model1 <- lmer(STSE1 ~ intervention * STSE0 + 
+model1 <- lmer(STSE1 ~ intervention * STSE0c + 
                  (1|schoolid), 
               data = atlas,
               na.action = na.exclude)
@@ -423,7 +436,7 @@ If you load the lmerTest package, it will add information about significance tes
 <<>>=
 library(lmerTest)
 
-model1 <- lmer(STSE1 ~ intervention * STSE0 + 
+model1 <- lmer(STSE1 ~ intervention * STSE0c + 
                  (1|schoolid), 
               data = atlas,
               na.action = na.exclude)
@@ -438,12 +451,14 @@ summary(model1)
 
 When you have more than one random component, you can also estimate the covariance(s) between them, or you can restrict the covariances to be 0. \\
 \pause
-This estimates the covariance between slope for STSE0 and the intercept:
+This estimates the covariance between slope for STSE0c and the intercept:
 <<>>=
-model2 <- lmer(STSE1 ~ intervention * STSE0 + 
-                 (1 + STSE0|schoolid), 
+model2 <- lmer(STSE1 ~ intervention * STSE0c + 
+                 (1 + STSE0c|schoolid), 
               data = atlas,
               na.action = na.exclude)
+
+summary(model2)
 @
 
 \end{frame}
@@ -453,10 +468,12 @@ model2 <- lmer(STSE1 ~ intervention * STSE0 +
 
 And this constrains the covariance to be 0:
 <<>>=
-model2.nocov <- lmer(STSE1 ~ intervention * STSE0 + 
-                 (1|schoolid) + (0 + STSE0|schoolid), 
+model2.nocov <- lmer(STSE1 ~ intervention * STSE0c + 
+                 (1|schoolid) + (0 + STSE0c|schoolid), 
               data = atlas,
               na.action = na.exclude)
+
+summary(model2.nocov)
 @
 
 \seealso{for more control over random component coavriance structure, see the nlme package}
@@ -471,12 +488,36 @@ anova(model1, model2)
 \pause 
 Note that the recommendation from the folks who wrote lme4 is to only use deviance change tests like this when the models have all of the same fixed effects (just the random effects changing).
 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Model 3: Adding MORE random slopes}
+
+<<>>=
+model3 <- lmer(STSE1 ~ intervention * STSE0c + 
+                 (1 + intervention * STSE0c | schoolid), 
+              data = atlas,
+              na.action = na.exclude)
+@
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Printing model tables}
+
+The pander package can't handle lme4 objects, unfortunately. \\
+\pause
+But texreg can! It won't work with knitting directly to word, but there's a decent work around:
+<< texreg >>=
+htmlreg(model2, file="model2_table.doc") # one model
+
+htmlreg(list(model1, model2), file="model1and2_table.doc") # compare two or more models
+@
+And then you can copy the table right into your word doc.
 
 \end{frame}
 % -------------------------------------------------------------
 
-
-\subsection{Example 2: Longitudinal data}
+\section{Plotting}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[
@@ -488,35 +529,59 @@ Note that the recommendation from the folks who wrote lme4 is to only use devian
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Additional resources about repeated measures}
+\begin{frame}[fragile]{Plotting}
 
-\begin{itemize}
-  \item This excellent blog post describes when a repeated measures ANOVA won't work and what you can do instead (hint, in most cases, a mixed effects model is a great solution) \url{http://www.theanalysisfactor.com/when-repeated-measures-anova-not-work-for-repeated-measures-data/}
-\end{itemize}
+<< predict >>=
+atlas$pred1 <- predict(model1)
 
+atlas$pred2 <- predict(model2)
+@
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+
+<< geom_point >>=
+ggplot(atlas, aes(y=STSE1, x=STSE0c, color=intervention)) + 
+  geom_point(alpha=.3)
+@
+
+\wwtd{}
+<<  >>=
+ggplot(atlas, aes(y=STSE1, x=STSE0c, color=intervention, group=schoolid)) + 
+  geom_point(alpha=.3) + 
+  geom_smooth(method="lm", se=FALSE)
+@
+
+\wwtd{What would change if I added facet\_wrap( ~ schoolid) to this ggplot?}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Plotting}
+
+Add lines from the models:
+
+<<>>=
+ggplot(atlas, aes(y=STSE1, x=STSE0c, color=intervention)) + 
+  geom_point(alpha=.3) + 
+  geom_line(aes(y=pred1, group=schoolid), alpha=.7) + 
+  labs(title="Model 1: Random Intercepts")
+@
+
+\hwydt{What would you need to change to plot model 2 instead of model 1?}
+\pause
+<<>>=
+ggplot(atlas, aes(y=STSE1, x=STSE0c, color=intervention)) + 
+  geom_point(alpha=.3) + 
+  geom_line(aes(y=pred2, group=schoolid), alpha=.7) + 
+  labs(title="Model 2: Random Slopes of STSE0 and Intercepts") 
+@
 
 \end{frame}
 % -------------------------------------------------------------
 
-
-\subsection{Example 3: Random effect}
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Overview}
-\tableofcontents[
-    currentsubsection,
-    hideothersubsections,
-    sectionstyle=show/shaded,
-    subsectionstyle=show/shaded,
-    ]
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{title}
-
-text
-
-\end{frame}
-% -------------------------------------------------------------
 %' % -------------------------------------------------------------
 %' \begin{frame}[fragile]{title}
 %' From http://www.unt.edu/rss/class/Jon/R_SC/Module9/LMM_Examples.R
