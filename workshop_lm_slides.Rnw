@@ -63,9 +63,9 @@
 
 \title[R Workshop]{Intro to linear models in R}
 
-\date[17/01/2021]{Jan 17th, 2021}
+\date[01/02/2021]{Feb 1st, 2021}
 \author[R. Hartman]{Rose Hartman, PhD\\ she/her}
-\institute[CHOP]{Arcus Education Team\\ Children's Hospital of Philadelphia}
+\institute[CHOP]{Teaching Demonstration: Arcus Education Team\\ Children's Hospital of Philadelphia}
 
 \maketitle
 
