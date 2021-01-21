@@ -364,7 +364,7 @@ model1 <- lm(STSE1 ~ STSE0 + intervention, data=atlas,
               na.action=na.exclude)
 @
 
-\keyidea{Models in lm() are specified as a "formula", like this: outcome ~ predictors}
+\keyidea{Models in lm() are specified as a "formula", like this: $outcome \sim predictors$}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -379,7 +379,7 @@ lm(STSE1 ~ SE1, data=atlas,
     na.action=na.exclude)
 @
 
-\keyidea{In the lm() function, you refer to variables in the data by their bare names, without using $.}
+\keyidea{In the lm() function, you refer to variables in the data by their bare names.}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -472,8 +472,8 @@ plot(model1)
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: Running the model}
 
-\keyidea{Models in lm() are specified as a "formula", like this: outcome ~ predictors}
-\keyidea{In the lm() function, you refer to variables in the data by their bare names, without using $.}
+\keyidea{Models in lm() are specified as a "formula", like this: $outcome \sim predictors$}
+\keyidea{In the lm() function, you refer to variables in the data by their bare names.}
 \keyidea{Interactions are specified with :, and * is shorthand for an interaction and both component main effects.}
 
 \end{frame}
@@ -661,7 +661,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: Plotting results}
 
-\keyidea
+\keyidea{text}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -773,7 +773,7 @@ car::Anova(model, type=3) # type 3 sums of squares
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: More models}
 
-\keyidea
+\keyidea{text}
 
 \end{frame}
 % -------------------------------------------------------------
