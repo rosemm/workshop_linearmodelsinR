@@ -75,7 +75,19 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 @
 
 % very important to use option [fragile] for frames containing code output!
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Linear models?}
 
+
+% If you've use t-tests, ANOVAs, or regression, then you've been using linear models, even if you didn't realize it. 
+\begin{itemize}
+   \item<1-> Linear models are some of the most common (and useful!) tools in data analysis.
+    \item<2-> R is a fantastic choice for reproducible analyses.
+    \item<3-> Once you get a handle on linear models in R, you're off to the races!
+  \end{itemize}
+
+\end{frame}
+% -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Workshop Overview}
 
@@ -163,6 +175,12 @@ In most cases (when you have a single outcome variable), this can be written in 
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Linear models}
+\keyidea{Most basic stats rely on the same underlying math. Sometimes we want the results displayed differently depending on the design, but the calculations are the same.}
+\end{frame}
+% -------------------------------------------------------------
+
 
 \subsection{Tips for presenting model results}
 % -------------------------------------------------------------
@@ -305,7 +323,14 @@ summary(atlas)
 @
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Getting your data into R}
 
+\keyidea{Remember, if your data file isn't in R's working directory you need to tell R where to look for it.}
+\keyidea{Always check your data frame using str() and View() or head() before you run any tests.}
+
+\end{frame}
+% -------------------------------------------------------------
 
 \subsection{Running the model}
 % -------------------------------------------------------------
@@ -335,9 +360,11 @@ Example question: Do students who got the intervention show improved strength-tr
 
 \pause
 << ex1_model >>=
-model1 <- lm( STSE1 ~ STSE0 + intervention, data=atlas,
+model1 <- lm(STSE1 ~ STSE0 + intervention, data=atlas,
               na.action=na.exclude)
 @
+
+\keyidea{Models in lm() are specified as a "formula", like this: outcome ~ predictors}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -348,9 +375,11 @@ model1 <- lm( STSE1 ~ STSE0 + intervention, data=atlas,
 \hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) are related to their post-test self-esteem (SE1)}
 \pause
 <<  >>=
-lm( STSE1 ~ SE1, data=atlas,
+lm(STSE1 ~ SE1, data=atlas,
     na.action=na.exclude)
 @
+
+\keyidea{In the lm() function, you refer to variables in the data by their bare names, without using $.}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -360,7 +389,7 @@ lm( STSE1 ~ SE1, data=atlas,
 \hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) are different for the intervention group vs. control}
 \pause
 <<  >>=
-lm( STSE1 ~ intervention, data=atlas,
+lm(STSE1 ~ intervention, data=atlas,
     na.action=na.exclude)
 @
 
@@ -371,7 +400,7 @@ lm( STSE1 ~ intervention, data=atlas,
 
 \wwtd{What will this model test?}
 <<  >>=
-lm( STSE1 ~ intervention + SE1 + STSE0, data=atlas,
+lm(STSE1 ~ intervention + SE1 + STSE0, data=atlas,
     na.action=na.exclude)
 @
 \pause
@@ -385,14 +414,16 @@ It will test whether students' strength-training self-efficacy at post test (STS
 \hwydt{Expand the previous model to also test whether the effect of the intervention depends on the students' pretest self-esteem (SE1). In other words, add an interaction between intervention and pretest self-esteem.}
 \pause
 <<  >>=
-lm( STSE1 ~ intervention + SE1 + STSE0 + SE1:STSE0, data=atlas,
+lm(STSE1 ~ intervention + SE1 + STSE0 + SE1:STSE0, data=atlas,
     na.action=na.exclude)
 @
 \pause
 <<  >>=
-lm( STSE1 ~ intervention + SE1*STSE0, data=atlas,
+lm(STSE1 ~ intervention + SE1*STSE0, data=atlas,
     na.action=na.exclude)
 @
+
+\keyidea{Interactions are specified with :, and * is shorthand for an interaction and both component main effects.}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -402,12 +433,12 @@ lm( STSE1 ~ intervention + SE1*STSE0, data=atlas,
 \hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest strength-training self-efficacy (STSE0). Allow for the possibility that the effect of the intervention depends on pretest score.}
 \pause
 <<  >>=
-lm( STSE1 ~ intervention + STSE0 + intervention:STSE0, data=atlas,
+lm(STSE1 ~ intervention + STSE0 + intervention:STSE0, data=atlas,
     na.action=na.exclude)
 @
 \pause
 <<  >>=
-lm( STSE1 ~ intervention*STSE0, data=atlas,
+lm(STSE1 ~ intervention*STSE0, data=atlas,
     na.action=na.exclude)
 @
 
@@ -418,10 +449,9 @@ lm( STSE1 ~ intervention*STSE0, data=atlas,
 
 Let's run that last one.
 <<>>=
-model1 <- lm( STSE1 ~ intervention*STSE0, data=atlas,
+model1 <- lm(STSE1 ~ intervention*STSE0, data=atlas,
               na.action=na.exclude)
 @
-
 
 \end{frame}
 % -------------------------------------------------------------
@@ -439,7 +469,15 @@ plot(model1)
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Running the model}
 
+\keyidea{Models in lm() are specified as a "formula", like this: outcome ~ predictors}
+\keyidea{In the lm() function, you refer to variables in the data by their bare names, without using $.}
+\keyidea{Interactions are specified with :, and * is shorthand for an interaction and both component main effects.}
+
+\end{frame}
+% -------------------------------------------------------------
 
 \subsection{Summarizing the results}
 % -------------------------------------------------------------
@@ -458,6 +496,8 @@ plot(model1)
 <<>>=
 summary(model1)
 @
+
+\keyidea{R has summarizing functions that work on the model object you saved}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -483,6 +523,14 @@ If you want your results ANOVA style (with the sums of squares and the F tests i
 car::Anova(model1, type=3) # type 3 sums of squares
 @
 
+\keyidea{ANOVA style output and regression style output are just two different ways to communicate the same information}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Summarizing results}
+
+\keyidea{R has summarizing functions that work on the model object you saved}
 \keyidea{ANOVA style output and regression style output are just two different ways to communicate the same information}
 
 \end{frame}
@@ -611,6 +659,13 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Plotting results}
+
+\keyidea
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
 \begin{frame}[fragile]{Additional resources for learning ggplot2}
 \begin{itemize}
   \item Read Jenny Bryan's \verb+ggplot2+ tutorials --- tons of great examples and code! Click on the files that have the file extension .md (those will be the easiest to read) \\ \url{https://github.com/jennybc/ggplot2-tutorial}
@@ -712,6 +767,13 @@ model <- lm(STSE0 ~ intervention, data=atlas)
 
 car::Anova(model, type=3) # type 3 sums of squares
 @
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: More models}
+
+\keyidea
 
 \end{frame}
 % -------------------------------------------------------------
