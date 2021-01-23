@@ -72,6 +72,10 @@
 <<setup, include=FALSE, echo=FALSE>>=
 library("knitr")
 opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALSE)
+
+# #to get r code from the slides, use purl()
+# purl("workshop_lm_slides.rnw")
+
 @
 
 % very important to use option [fragile] for frames containing code output!
