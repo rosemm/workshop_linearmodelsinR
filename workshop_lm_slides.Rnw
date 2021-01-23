@@ -80,7 +80,7 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 
 % very important to use option [fragile] for frames containing code output!
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Linear models?}
+\begin{frame}[fragile]{Why are we here?}
 
 
 % If you've use t-tests, ANOVAs, or regression, then you've been using linear models, even if you didn't realize it. 
@@ -103,10 +103,22 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 \begin{frame}[fragile]{This workshop}
 
 \begin{itemize}
-   \item<1-> Focus on the R code rather than the stats --- if you'd like to learn about the stats behind the general linear model more deeply, I can recommend several excellent classes and texts.
+   \item<1-> Focus on the R code rather than the stats --- if you'd like to learn about the stats behind the general linear model more deeply, I can recommend several excellent classes and texts. 
     \item<2-> Lots of practice. Learn R by using R!
-    \item<3-> We'll be using \verb+haven+ to read in an SPSS data file and \verb+ggplot2+ for plotting
+    \item<3-> We'll be using \verb+haven+ to read in an SPSS data file, \verb+ggplot2+ for plotting, and \verb+pander+ for making tables of model results
+    \item<4-> For those of you who are learning/psych geeks...
+    \begin{itemize}
+	    \item<4-> interleaved training and progressive alignment
+	    \item<5-> realistic practice problems from the two perspectives you're most likely to encounter in real life
+	    \item<6-> consistent color-coding of different types of information 
+	    \end{itemize}
   \end{itemize}
+  
+<< notes_this-workshop, echo=FALSE>>=
+# I'm trying to maximize your ability to generalize what you learn here to new circumstances you'll encounter, so I'll be harnessing the power of interleaved training and progressive alignment. 
+# I'll ask you to tackle realistic practice problems from the two perspectives you'll most likely to encounter in real life: I have an idea in my head and I need to turn it into code, and I've got some code here and I need to figure out what it does.
+# You'll also notice consistent color-coding of different types of information throughout to help you allocate your attention in support of your learning goals, and to facilitate appropriate comparison across situations.
+@
 
 \end{frame}
 % -------------------------------------------------------------
@@ -222,7 +234,7 @@ library("knitr")
 You can use knitr tools built right into R Studio to write r-markdown documents that include both code and text, and then "knit" them up into .docx, .pdf, or .html.\\
 This makes it easy to get your R output into (close to) the table formatting you'll need in your document.
 
-\seealso{If you want to use latex instead of markdown for the text part, use Sweave files (.rnw) instead of  R-markdown (.rmd)}
+\seealso{If you want to use LaTex instead of markdown for the text part, use Sweave files (.rnw) instead of  R-markdown (.rmd)}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -244,6 +256,8 @@ We'll use pander to automatically format model summaries into lovely tables.
 << >>=
 install.packages("pander")
 @
+
+\seealso{There are many packages for making R output into nice tables, including the knitr::kable() that comes standard in R Studio, and \href{https://bookdown.org/yihui/rmarkdown-cookbook/table-other.html}{many others}. I find pander yields the most professional results in Word output.}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -364,8 +378,8 @@ Example question: Do students who got the intervention show improved strength-tr
 
 \pause
 << ex1_model >>=
-model1 <- lm(STSE1 ~ STSE0 + intervention, data=atlas,
-              na.action=na.exclude)
+lm(STSE1 ~ STSE0 + intervention, data=atlas,
+   na.action=na.exclude)
 @
 
 \keyidea{Models in lm() are specified as a "formula", like this: $outcome \sim predictors$}
