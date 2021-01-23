@@ -139,13 +139,15 @@ Keep an eye out for...
 % -------------------------------------------------------------
 \begin{frame}[fragile]{}
 
-If you don't already have \verb+ggplot2+, and \verb+haven+ installed, do that now:
+If you don't already have \verb+ggplot2+, \verb+haven+, and \verb+pander+ installed, do that now:
 <<>>=
 install.packages("ggplot2")
 install.packages("haven")
+install.packages("pander")
 
 library("ggplot2")
 library("haven")
+library("pander")
 @
 
 \learnmore{In addition to SPSS, haven also works with SAS and Stata files}
@@ -198,72 +200,8 @@ In most cases (when you have a single outcome variable), this can be written in 
 % -------------------------------------------------------------
 
 
-\subsection{Tips for presenting model results}
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Overview}
-\tableofcontents[ 
-    currentsubsection, 
-    hideothersubsections, 
-    sectionstyle=show/shaded, 
-    subsectionstyle=show/shaded, 
-    ] 
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Building dynamic documents}
 
-No matter what software you're using, it's a pain to copy-paste over numbers from a table in your output to a table in your manuscript. \\
-\pause
-\bigskip
-More importantly, it makes your work less reproducible, and any human error in that copy-pasting can create a huge mess.\\
-\pause
-\bigskip
-Wouldn't it be great if you could have R automatically produce your output in Word or pdf? Wish granted!
-
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Building dynamic documents}
-
-<<>>=
-install.packages("knitr")
-library("knitr")
-@
-
-\pause
-You can use knitr tools built right into R Studio to write r-markdown documents that include both code and text, and then "knit" them up into .docx, .pdf, or .html.\\
-This makes it easy to get your R output into (close to) the table formatting you'll need in your document.
-
-\seealso{If you want to use LaTex instead of markdown for the text part, use Sweave files (.rnw) instead of  R-markdown (.rmd)}
-
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Building dynamic documents}
-
-Markdown is a super simple language for formatting text. It can't do much, but it handles most of what you'll need for a basic document, and it's really quick to learn.
-
-\learnmore{ \url{https://daringfireball.net/projects/markdown/basics} }
-\pause
-Try opening a new .rmd file in R Studio now!
-
-\end{frame}
-% -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Building dynamic documents}
-
-We'll use pander to automatically format model summaries into lovely tables.
-<< >>=
-install.packages("pander")
-@
-
-\seealso{There are many packages for making R output into nice tables, including the knitr::kable() that comes standard in R Studio, and \href{https://bookdown.org/yihui/rmarkdown-cookbook/table-other.html}{many others}. I find pander yields the most professional results in Word output.}
-
-\end{frame}
-% -------------------------------------------------------------
-
-
-\section{Run some models!}
+\section{Running linear models}
 \subsection{Prepping the data}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
@@ -350,7 +288,8 @@ summary(atlas)
 \end{frame}
 % -------------------------------------------------------------
 
-\subsection{Running the model}
+
+\subsection{Writing the model formula}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Overview}
 \tableofcontents[ 
@@ -374,7 +313,7 @@ summary(atlas)
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Writing a formula}
 
-Example question: Do students who got the intervention show improved strength-training self-efficacy, taking into account their pretest strength-training self-efficacy scores?
+Example question: Do students who got the intervention show improved strength-training self-efficacy posttest (STSE1), taking into account their pretest strength-training self-efficacy scores (STSE0)?
 
 \pause
 << ex1_model >>=
@@ -410,6 +349,8 @@ lm(STSE1 ~ SE1, data=atlas,
 lm(STSE1 ~ intervention, data=atlas,
     na.action=na.exclude)
 @
+
+\keyidea{When using a categorical variable in your model, make sure it's being treated as a factor in the data}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -462,6 +403,29 @@ lm(STSE1 ~ intervention*STSE0, data=atlas,
 
 \end{frame}
 % -------------------------------------------------------------
+
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Running the model}
+
+\keyidea{Models in lm() are specified as a "formula", like this: $outcome \sim predictors$}
+\keyidea{In the lm() function, you refer to variables in the data by their bare names.}
+\keyidea{When using a categorical variable in your model, make sure it's being treated as a factor in the data}
+\keyidea{Interactions are specified with :, and * is shorthand for an interaction and both component main effects.}
+
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{Running the model}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{The model}
 
@@ -483,16 +447,74 @@ model1
 str(model1)
 
 plot(model1)
+
+summary(model1)
 @
 
 \end{frame}
 % -------------------------------------------------------------
-% -------------------------------------------------------------
-\begin{frame}[fragile]{Key ideas from this section: Running the model}
 
-\keyidea{Models in lm() are specified as a "formula", like this: $outcome \sim predictors$}
-\keyidea{In the lm() function, you refer to variables in the data by their bare names.}
-\keyidea{Interactions are specified with :, and * is shorthand for an interaction and both component main effects.}
+\section{Presenting model results}
+\subsection{Literate statistical programming}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsubsection, 
+    hideothersubsections, 
+    sectionstyle=show/shaded, 
+    subsectionstyle=show/shaded, 
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Building dynamic documents}
+
+No matter what software you're using, it's a pain to copy-paste over numbers from a table in your output to a table in your manuscript. \\
+\pause
+\bigskip
+More importantly, it makes your work less reproducible, and any human error in that copy-pasting can create a huge mess.\\
+\pause
+\bigskip
+Wouldn't it be great if you could have R automatically produce your output in Word or pdf? Wish granted!
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Building dynamic documents}
+
+<<>>=
+install.packages("knitr")
+library("knitr")
+@
+
+\pause
+You can use knitr tools built right into R Studio to write r-markdown documents that include both code and text, and then "knit" them up into .docx, .pdf, or .html.\\
+This makes it easy to get your R output into (close to) the table formatting you'll need in your document.
+
+\seealso{If you want to use LaTex instead of markdown for the text part, use Sweave files (.rnw) instead of  R-markdown (.rmd)}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Building dynamic documents}
+
+Markdown is a super simple language for formatting text. It can't do much, but it handles most of what you'll need for a basic document, and it's really quick to learn.
+
+\learnmore{ \url{https://daringfireball.net/projects/markdown/basics} }
+\pause
+Try opening a new .rmd file in R Studio now!
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Building dynamic documents}
+
+We'll use pander to automatically format model summaries into lovely tables.
+<< >>=
+?pander
+@
+
+\learnmore{There are many packages for making R output into nice tables, see \url{https://bookdown.org/yihui/rmarkdown-cookbook/table-other.html}. I find pander yields the most professional model results in Word output.}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -524,8 +546,7 @@ summary(model1)
 
 add this code to your .rmd file, and make sure you've set your knitr options to results='asis'
 <<>>=
-model.sum <- summary(model1)
-pander(model.sum)
+pander(summary(model1))
 @
 
 \seealso{the stargazer package, which makes lovely model tables and works for knitting to pdf but not Word}
@@ -612,8 +633,6 @@ atlas$intervention <- factor(atlas$intervention,
                              levels=c("yes", "no"),
                              labels=c("intervention", "control"))
 @
-
-
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
@@ -636,7 +655,8 @@ ggplot(atlas, aes(x=STSE0, y=STSE1)) +
   facet_wrap(~ intervention)
 @
 
-\keyidea{geom\_smooth(method="lm") will draw the line of best fit through the data it corresponds to. Adding a factor to color= within aes() splits points and lines into subsets}
+\keyidea{geom\_smooth(method="lm") will draw the line of best fit through the data it corresponds to.} 
+\keyidea{Adding a factor to color= within aes() splits points and lines into subsets}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -694,7 +714,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 \end{frame}
 % -------------------------------------------------------------
 
-\section{More models}
+\section{Other versions of the linear model}
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Getting special output for other types of models}
 
