@@ -82,7 +82,6 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Why we are here}
 
-
 % If you've use t-tests, ANOVAs, or regression, then you've been using linear models, even if you didn't realize it. 
 \begin{itemize}
    \item<1-> Linear models are some of the most common (and useful!) tools in data analysis.
@@ -93,9 +92,11 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
-\begin{frame}[fragile]{Workshop Overview}
+\begin{frame}[fragile]{Who this workshop is for}
 
-\tableofcontents[]
+This workshop is geared toward people working on practical data analysis problems in a research context. \\
+\bigskip
+It is appropriate for beginners, but you should have at least some exposure to R (or be willing to jump in quickly) and some basic stats training. 
 
 \end{frame}
 % -------------------------------------------------------------
@@ -118,6 +119,7 @@ opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize', eval=FALS
 # I'm trying to maximize your ability to generalize what you learn here to new circumstances you'll encounter, so I'll be harnessing the power of interleaved training and progressive alignment. https://openlearning.mit.edu/mit-faculty/research-based-learning-findings/spaced-and-interleaved-practice
 # I'll ask you to tackle realistic practice problems from the two perspectives you'll most likely to encounter in real life: I have an idea in my head and I need to turn it into code, and I've got some code here and I need to figure out what it does.
 # You'll also notice consistent color-coding of different types of information throughout to help you allocate your attention in support of your learning goals, and to facilitate appropriate comparison across situations.
+# Things I'm glossing over include: study design, violations to the assumptions of the linear model (e.g. non-normal residuals, clustered data), strategies for handling outliers and missing data, ins and outs of hypothesis testing and interpretation, etc.
 @
 
 \end{frame}
@@ -133,6 +135,17 @@ Keep an eye out for...
 \learnmore{resources to check out}
 \keyidea{the big ideas you need to hold on to}
 \seealso{other functions or packages that do a similar thing}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{How to follow along}
+
+You have two options for participating in this workshop:
+\begin{itemize}
+    \item<1-> Work in your own instance of R Studio (you'll still want the data file available here \url{https://github.com/rosemm/workshop_linearmodelsinR})
+    \item<2-> Open the rstudio.cloud project for this workshop, which contains all the code: \url{link}
+  \end{itemize}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -155,7 +168,13 @@ library("pander")
 
 \end{frame}
 % -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Workshop Overview}
 
+\tableofcontents[]
+
+\end{frame}
+% -------------------------------------------------------------
 \section{Background and overview}
 \subsection{What is the general linear model?}
 \setbeamercovered{transparent}
@@ -259,7 +278,8 @@ summary(atlas)
 @
 
 
-\keyidea{Always check your data frame using str() and View() or head() before you run any tests.}
+\keyidea{Always check your data frame using functions like str(), head(), and summary() before you run any tests.}
+\learnmore{Read about the ATLAS project here \url{https://www.ohsu.edu/sites/default/files/2019-06/ATLAS-Program.pdf}}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -267,10 +287,6 @@ summary(atlas)
 \begin{frame}[fragile]{Creating factors}
 
 << make_factor >>=
-atlas$use0 <- factor(atlas$use0, 
-                     levels=c(0, 1),
-                     labels=c("no", "yes")) 
-
 atlas$intervention <- factor(atlas$intervention, 
                              levels=c(0, 1),
                              labels=c("no", "yes")) 
@@ -283,7 +299,7 @@ summary(atlas)
 \begin{frame}[fragile]{Key ideas from this section: Getting your data into R}
 
 \keyidea{Remember, if your data file isn't in R's working directory you need to tell R where to look for it.}
-\keyidea{Always check your data frame using str() and View() or head() before you run any tests.}
+\keyidea{Always check your data frame using functions like str(), head(), and summary() before you run any tests.}
 
 \end{frame}
 % -------------------------------------------------------------
