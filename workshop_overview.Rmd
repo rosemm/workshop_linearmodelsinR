@@ -1,16 +1,10 @@
 ---
-title: "Workshop Design"
-author: "Rose Hartman"
-date: "2/1/2021"
-output: pdf_document
-header-includes:
-  - \input{workshops.tex}
+output:
+  pdf_document: default
+header-includes: 
+  \input{workshops.tex}
+  \geometry{letterpaper, portrait, margin=.5in}
 ---
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 <!-- describes the design of your workshop -->
 
@@ -24,7 +18,10 @@ knitr::opts_chunk$set(echo = TRUE)
 <!-- Formative or summative assessments -->
 <!-- A mind map / concept map of the topics you’re covering -->
 
-# Who
+# Workshop Design: Intro to linear models in R
+Rose Hartman
+
+## Who?
 
 This workshop is for researchers who want to run their statistical analyses in R. 
 To that end, the example data is from a research project (the ATLAS study on steroid use in adolescent athletes),
@@ -43,12 +40,23 @@ Most of my attendees came to all four workshops, but I did have several jump in 
 so they are designed to stand on their own (i.e. they don't rely specifically on material from the intro to R workshop). 
 
 
-# What
+## What?
 
-# How
+Learning objectives:
+
+* understand the difference (in R) between estimating a linear model and presenting the results
+* be able to understand and write model formulae for the `lm()` function
+* understand and execute code for a start-to-finish regression analysis, including bringing the data into R, estimating the model, and exploring the results via table output and plots
+* be able to identify some advantages of literate statisical programming over more traditional analysis practices
+* be able to write a minimal example of a scientific manuscript in R-markdown featuring a regression analysis and output 
+
+
+## How?
 
 \hwydt{ }
 \wwtd{ }
 \learnmore{resources to check out}
 \keyidea{big}
 \seealso{more}
+
+## How well?
