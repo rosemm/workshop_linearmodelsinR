@@ -566,7 +566,8 @@ pander(summary(model1))
 @
 
 \seealso{The stargazer package makes lovely model tables and works for knitting to pdf but not Word}
-\seealso{knitr has a function for making tables, kable(), but it doesn't work for model summaries unless you run broom::tidy() on them first}
+
+\seealso{knitr has a function for making tables, kable(), but it doesn't work for model summaries unless you run broom::tidy() or paperR::prettify() on them first}
 
 \end{frame}
 % -------------------------------------------------------------
@@ -751,4 +752,106 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 % -------------------------------------------------------------
 
 
+\section{Data to manuscript}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Overview}
+\tableofcontents[ 
+    currentsection,  
+    sectionstyle=show/shaded
+    ] 
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{Your R-markdown document}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Text and chunks}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{knitr options}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{YAML header}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{rticles templates}
+text
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{Table output}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Tables: Descriptive stats}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Tables: Model output}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Tables: Custom tables}
+text
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{In-line stats}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{In-line descriptive stats}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{In-line model summary}
+text
+\end{frame}
+% -------------------------------------------------------------
+
+\subsection{Perfecting plots}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Perfecting plots: Theme}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Perfecting plots: Colors}
+
+\learnmore{For a tutorial on controlling colors in ggplot, see an old UO R Club post of mine: \url{http://blogs.uoregon.edu/rclub/2015/02/17/picking-pretty-plot-palates/}}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Perfecting plots: Axes and lables}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Perfecting plots: Saving images}
+text
+\end{frame}
+% -------------------------------------------------------------
+\subsection{Writing and citations}
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Headers and paragraphs}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Citations}
+text
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{Key ideas from this section: Data to manuscript}
+
+\keyidea{text}
+
+\end{frame}
+% -------------------------------------------------------------
 \end{document}
