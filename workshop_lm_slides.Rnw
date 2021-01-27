@@ -82,8 +82,11 @@ Keep an eye out for...
 \hwydt{}
 \pause
 \wwtd{}
+\pause
 \learnmore{resources to check out}
+\pause
 \keyidea{the big ideas you need to hold on to}
+\pause
 \seealso{other functions or packages that do a similar thing}
 
 \end{frame}
@@ -113,6 +116,7 @@ library("haven")
 library("pander")
 @
 
+\pause
 \learnmore{In addition to SPSS, haven also works with SAS and Stata files}
 \seealso{haven and ggplot2 are both part of the tidyverse, an excellent collection of r packages for data science https://www.tidyverse.org/}
 
@@ -143,6 +147,7 @@ Quite a lot! Most basic stats techniques are based on the general linear model.
 \pause
 \pause
 \pause
+\pause
 \keyidea{Most basic stats rely on the same underlying math. Sometimes we want the results displayed differently depending on the design, but the calculations are the same.}
 
 \end{frame}
@@ -164,6 +169,7 @@ In most cases (when you have a single outcome variable), this can be written in 
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: Linear models}
+\pause
 \keyidea{Most basic stats rely on the same underlying math. Sometimes we want the results displayed differently depending on the design, but the calculations are the same.}
 \end{frame}
 % -------------------------------------------------------------
@@ -195,6 +201,7 @@ If you want R to find something on your computer, you have three options:
   \item Specify the file path when you tell R to look for the file
 \end{enumerate}
 
+\pause
 \seealso{You can also use the menu options in R Studio to change R's working directory.}
 
 \end{frame}
@@ -210,6 +217,7 @@ Find the file on your computer, get its location, and add that file path to your
 atlas <- read_sav("data/ATLAS.sav")
 @
 
+\pause
 \keyidea{Remember, if your data file isn't in R's working directory you need to tell R where to look for it.}
 
 \end{frame}
@@ -225,7 +233,7 @@ head(atlas)
 summary(atlas)
 @
 
-
+\pause
 \keyidea{Always check your data frame using functions like str(), head(), and summary() before you run any tests.}
 \learnmore{Read about the ATLAS project here \url{https://www.ohsu.edu/sites/default/files/2019-06/ATLAS-Program.pdf}}
 
@@ -246,6 +254,7 @@ summary(atlas) # check your work
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: Getting your data into R}
 
+\pause
 \keyidea{Remember, if your data file isn't in R's working directory you need to tell R where to look for it.}
 \keyidea{Always check your data frame using functions like str(), head(), and summary() before you run any tests.}
 
@@ -285,6 +294,7 @@ lm(STSE1 ~ STSE0 + intervention, data=atlas,
    na.action=na.exclude)
 @
 
+\pause
 \keyidea{Models in lm() are specified as a "formula", like this: $outcome \sim predictors$}
 
 \end{frame}
@@ -300,6 +310,7 @@ lm(STSE1 ~ SE1, data=atlas,
     na.action=na.exclude)
 @
 
+\pause
 \keyidea{In the lm() function, you refer to variables in the data by their bare names.}
 
 \end{frame}
@@ -314,6 +325,7 @@ lm(STSE1 ~ intervention, data=atlas,
     na.action=na.exclude)
 @
 
+\pause
 \keyidea{When using a categorical variable in your model, make sure it's being treated as a factor in the data}
 
 \end{frame}
@@ -346,6 +358,7 @@ lm(STSE1 ~ intervention + SE1*STSE0, data=atlas,
     na.action=na.exclude)
 @
 
+\pause
 \keyidea{Interactions are specified with :, and * is shorthand for an interaction and both component main effects.}
 
 \end{frame}
@@ -441,6 +454,7 @@ More importantly, it makes your work less reproducible, and any human error in t
 \bigskip
 Wouldn't it be great if you could have R automatically produce your output in Word or pdf? Wish granted!
 
+\pause
 \keyidea{Literate statistical program saves you time, makes your work cleaner and more reproducible, and soothes your anxiety.}
 
 \end{frame}
@@ -457,6 +471,7 @@ library("knitr")
 You can use knitr tools built right into R Studio to write R-markdown documents that include both code and text, and then "knit" them up into .docx, .pdf, or .html.\\
 This makes it easy to get your R output into (close to) the table formatting you'll need in your document.
 
+\pause
 \seealso{If you want to use LaTex instead of markdown for the text part, use Sweave files (.rnw) instead of  R-markdown (.rmd)}
 
 \end{frame}
@@ -480,6 +495,7 @@ We'll use pander to automatically format model summaries into lovely tables.
 ?pander
 @
 
+\pause
 \learnmore{There are many packages for making R output into nice tables, see \url{https://bookdown.org/yihui/rmarkdown-cookbook/table-other.html}. I find pander yields the most professional model results in Word output.}
 
 \end{frame}
@@ -503,6 +519,7 @@ We'll use pander to automatically format model summaries into lovely tables.
 summary(model1)
 @
 
+\pause
 \keyidea{R has summarizing functions that work on the model object you saved}
 
 \end{frame}
@@ -515,8 +532,8 @@ add this code to your .rmd file, and make sure you've set your knitr options to 
 pander(summary(model1))
 @
 
+\pause
 \seealso{The stargazer package makes lovely model tables and works for knitting to pdf but not Word}
-
 \seealso{knitr has a function for making tables, kable(), but it doesn't work for model summaries unless you run broom::tidy() or paperR::prettify() on them first}
 
 \end{frame}
@@ -529,6 +546,7 @@ If you want your results ANOVA style (with the sums of squares and the F tests i
 car::Anova(model1, type=3) # type 3 sums of squares
 @
 
+\pause
 \keyidea{ANOVA style output and regression style output are just two different ways to communicate the same information}
 
 \end{frame}
@@ -570,6 +588,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1)) +
   geom_point(alpha=.3)
 @
 
+\pause
 \keyidea{ggplot2 works in layers. First you specify the variables you want to plot, then use layers to control the way they're plotted.}
 
 \end{frame}
@@ -591,7 +610,9 @@ ggplot(atlas, aes(x=STSE0, y=STSE1)) +
   facet_wrap(~ intervention)
 @
 
+\pause
 \keyidea{Use facet\_wrap() to split into multiple plots of subsets of the data.}
+\pause
 \learnmore{\url{https://ggplot2-book.org/facet.html}}
 
 \end{frame}
@@ -612,6 +633,7 @@ model1 <- lm(STSE1 ~ intervention*STSE0, data=atlas,
                na.action=na.exclude)
 @
 
+\pause
 \keyidea{It's easiest to make changes to the data before plotting, rather than manipulating things like factor levels within ggplot2.}
 
 \end{frame}
@@ -627,6 +649,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
   geom_smooth(method="lm")
 @
 
+\pause
 \keyidea{geom\_smooth(method="lm") will draw the line of best fit through the data it corresponds to.} 
 \keyidea{Adding a factor to color= within aes() splits points and lines into subsets}
 
@@ -658,6 +681,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
        color=NULL, fill = NULL) # removes the legend label
 @
 
+\pause
 \learnmore{\url{https://ggplot2-book.org/scales-guides.html}}
 \end{frame}
 % -------------------------------------------------------------
@@ -679,6 +703,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
        y="posttest strength training self-efficacy")
 @
 
+\pause
 \seealso{you can also add lines manually with geom\_abline(), where you specify the slope and intercept}
 
 \end{frame}
@@ -686,6 +711,7 @@ ggplot(atlas, aes(x=STSE0, y=STSE1,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: Plotting results}
 
+\pause
 \keyidea{text}
 
 \end{frame}
@@ -800,6 +826,7 @@ text
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Key ideas from this section: Data to manuscript}
 
+\pause
 \keyidea{text}
 
 \end{frame}
