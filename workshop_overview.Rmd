@@ -1,5 +1,5 @@
 ---
-title: "Workshop Overview"
+title: "Workshop Design"
 author: "Rose Hartman"
 date: "2/1/2021"
 output: pdf_document
@@ -12,6 +12,40 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<!-- describes the design of your workshop -->
+
+<!-- An itinerary / timeline of what is taught and what methods are used -->
+<!-- A description of the audience and any techniques you might use to discover their strengths and weaknesses more fully -->
+<!-- Goals of the workshop -->
+<!-- Expectations / community agreements / code of conduct you would offer to learners -->
+<!-- Challenges you foresee and possible ways to address them -->
+<!-- Potential ways to differentiate learning for learners who are struggling with the content or are bored because they are ahead of others -->
+<!-- Proposed methods to measure the success of the workshop -->
+<!-- Formative or summative assessments -->
+<!-- A mind map / concept map of the topics you’re covering -->
+
+# Who
+
+This workshop is for researchers who want to run their statistical analyses in R. 
+To that end, the example data is from a research project (the ATLAS study on steroid use in adolescent athletes),
+and the final product of the analysis document is assumed to be a manuscript for submission to a scientific journal.
+
+The workshop is appropriate for beginners, but I assume the learners are not complete programming novices --- they should have at least tried R before (attending an "intro to R" workshop would be enough), or have a little experience with another programming language and the willingness to jump in fast. 
+
+I also assume some experience with data analysis. 
+I briefly go over the linear model and common examples (regression, ANOVAs, etc.) in order to get everyone on the same page before explaining how linear models are implemented in R, but I do not spend time discussing things like when linear models are and aren't appropriate, assumptions underlying the linear model, or in-depth interpretation of results. 
+
+This workshop scales well from small groups to 50+. 
+When I gave a version of this workshop at the University of Oregon, I had an audience of 45, consisting of mostly grad students and postdocs, as well as several PIs and a handful of exceptional undergrads. 
+It was the second workshop in a series of four (intro to R, linear models in R, generalized linear models in R, and multilevel modeling in R).
+People who were brand new to R were encouraged to attend the intro to R workshop first, and then to select whichever of the latter three workshops best met their current analysis needs. 
+Most of my attendees came to all four workshops, but I did have several jump in only for one or more of the three more analysis-focused workshops, 
+so they are designed to stand on their own (i.e. they don't rely specifically on material from the intro to R workshop). 
+
+
+# What
+
+# How
 
 \hwydt{ }
 \wwtd{ }
