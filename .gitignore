@@ -13,7 +13,8 @@ figure
 *.nav
 *.snm
 *.gz
-*.tex
+*slides.tex
+*concordance.tex
 *.toc
 *.vrb
 *.csv
