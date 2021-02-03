@@ -274,6 +274,23 @@ summary(atlas) # check your work
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
+\begin{frame}[fragile]{But first...}
+
+\centering
+\url{https://rstudio.cloud/project/2100716}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
+\begin{frame}[fragile]{The ATLAS study}
+
+These are data from an intervention intended to reduce steroid use in student athletes by targeting their strength training self-efficacy. 
+
+\learnmore{Read about the ATLAS project here \url{https://www.ohsu.edu/sites/default/files/2019-06/ATLAS-Program.pdf}}
+
+\end{frame}
+% -------------------------------------------------------------
+% -------------------------------------------------------------
 \begin{frame}[fragile]{lm()}
 
 <<>>=
@@ -335,26 +352,26 @@ lm(STSE1 ~ intervention, data=atlas,
 
 \wwtd{What will this model test?}
 <<  >>=
-lm(STSE1 ~ intervention + SE1 + STSE0, data=atlas,
+lm(STSE1 ~ intervention + SE0 + STSE0, data=atlas,
     na.action=na.exclude)
 @
 \pause
-It will test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest self-esteem (SE1), controlling for their pretest strength-training self-efficacy (STSE0).
+It will test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention and their pretest self-esteem (SE0), controlling for their pretest strength-training self-efficacy (STSE0).
 
 \end{frame}
 % -------------------------------------------------------------
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Test your knowledge}
 
-\hwydt{Expand the previous model to also test whether the effect of the intervention depends on the students' pretest self-esteem (SE1). In other words, add an interaction between intervention and pretest self-esteem.}
+\hwydt{Expand the previous model to also test whether the effect of the intervention depends on the students' pretest self-esteem (SE0). In other words, add an interaction between intervention and pretest self-esteem.}
 \pause
 <<  >>=
-lm(STSE1 ~ intervention + SE1 + STSE0 + SE1:STSE0, data=atlas,
+lm(STSE1 ~ intervention + SE0 + STSE0 + SE0:STSE0, data=atlas,
     na.action=na.exclude)
 @
 \pause
 <<  >>=
-lm(STSE1 ~ intervention + SE1*STSE0, data=atlas,
+lm(STSE1 ~ intervention + SE0*STSE0, data=atlas,
     na.action=na.exclude)
 @
 
@@ -366,7 +383,7 @@ lm(STSE1 ~ intervention + SE1*STSE0, data=atlas,
 % -------------------------------------------------------------
 \begin{frame}[fragile]{Test your knowledge}
 
-\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest strength-training self-efficacy (STSE0). Allow for the possibility that the effect of the intervention depends on pretest score.}
+\hwydt{Specify a model formula to test whether students' strength-training self-efficacy at post test (STSE1) can be predicted from whether they got the intervention, their pretest strength-training self-efficacy (STSE0), and the interaction between the two. In other words, allow for the possibility that the effect of the intervention depends on pretest score.}
 \pause
 <<  >>=
 lm(STSE1 ~ intervention + STSE0 + intervention:STSE0, data=atlas,
