@@ -23,7 +23,7 @@ header-includes: |
 <!-- Formative or summative assessments -->
 <!-- A mind map / concept map of the topics you’re covering -->
 
-# Workshop Design: Intro to linear models in R
+# Intro to Linear Models in R: From Data to Manuscript
 
 ### Audience
 
@@ -31,24 +31,24 @@ This workshop is geared toward people working on practical data analysis problem
 To that end, the example data is from a research project (the ATLAS study on steroid use in adolescent athletes),
 and the final product of the analysis document is assumed to be a manuscript for submission to a scientific journal.
 It is appropriate for beginners, but learners should have at least some exposure to R (or be willing to jump in quickly) and some basic stats training.
-<!-- I briefly go over the linear model and common examples (regression, ANOVAs, etc.) in order to get everyone on the same page before explaining how linear models are implemented in R, but I do not spend time discussing things like when linear models are and aren't appropriate, assumptions underlying the linear model, or in-depth interpretation of results.  -->
+<!-- In terms of R experience, someone who had attended an intro to R workshop but wasn't really up to using R on their own yet should be able to follow along just fine. In terms of stats experience, this workshop would be best for people that have run linear models before or at least know what they are but are looking for help doing that kind of analysis in R. -->
+
 This workshop scales well from small groups to 50+. 
 <!-- When I gave a version of this workshop at the University of Oregon, I had an audience of 45, consisting of mostly grad students and postdocs, as well as several PIs and a handful of exceptional undergrads.  -->
-<!-- It was the second workshop in a series of four (intro to R, linear models in R, generalized linear models in R, and multilevel modeling in R). -->
-<!-- People who were brand new to R were encouraged to attend the intro to R workshop first, and then to select whichever of the latter three workshops best met their current analysis needs.  -->
-<!-- Most of my attendees came to all four workshops, but I did have several jump in only for one or more of the three more analysis-focused workshops,  -->
-<!-- so they are designed to stand on their own (i.e. they don't rely specifically on material from the intro to R workshop).  -->
 
-### Learning objectives:
+### Learning Objectives:
 
 - understand the difference (in R) between estimating a linear model and presenting the results
+<!-- One of my many favorite things about R is that it draws a clear distinction between estimating the model and presenting the results, unlike many other statistical environments. I think that's definitely the most coherent approach, but it can be a stumbling block for folks who are used to working with software that conflates estimation and presentation, like SPSS, so I make sure to spend a little time on it. -->
 - be able to understand and write model formulas for the `lm()` function
+<!-- in my experience, this is one of the first stumbling blocks for folks getting started with ilnear models in R, so I devote a fair amount of time to exploring how formulas work and giving people practice with them so they can go home and write forumlas for their own data analysis questions. -->
+<!-- This is the part of the workshop that I chose for the demonstration, so you'll be able to see this material in action. -->
 - understand and execute code for a start-to-finish regression analysis, including bringing the data into R, estimating the model, and exploring the results via table output and plots
 - be able to identify some advantages of literate statistical programming over more traditional analysis practices
 - be able to write a minimal example of a scientific manuscript in R-markdown featuring a regression analysis and output 
-<!-- Things I'm glossing over include: study design, violations to the assumptions of the linear model (e.g. non-normal residuals, clustered data), strategies for handling outliers and missing data, ins and outs of hypothesis testing and interpretation, etc. -->
+<!-- As I menioned, I do assume some stats training, so the way the workshop is written now I don't spend time expaining what linear models are, beyond a quick overview. Things I'm glossing over include: study design, violations to the assumptions of the linear model (e.g. non-normal residuals, clustered data), strategies for handling outliers and missing data, ins and outs of hypothesis testing and interpretation, etc. -->
 
-### Outline: 
+### Workshop Outline: 
 
 - Background and overview
 - Running linear models
@@ -66,11 +66,12 @@ This workshop scales well from small groups to 50+.
      - Perfecting plots
      - Writing and citations
 
-### Teaching philosophy
+### Teaching Philosophy
 
-<!-- diverse learners might include thsoe with dyslexia, attention disorders, vision or hearing impariment, language barriers, limited access to expensive tech, not having had coffee yet, etc. -->
+
 *Universal Design:* Teaching materials should be designed to be accessible to a wide range of learners from the get go, rather than planing to make accommodations in response to expressed need. 
-<!-- This is an improatnt equity consideration in terms of making content accessible for folks who might not otherwise be able to learn from it, but it actually helps all learners. Folks often know how best to set themselves up for success, and they'll do it fi you just provide the flexibility to accommodate a range of styles. -->
+<!-- diverse learners might include thsoe with dyslexia, attention disorders, vision or hearing impariment, language barriers, limited access to expensive tech, not having had coffee yet, etc. -->
+<!-- This is an improatnt equity consideration in terms of making content accessible for folks who might not otherwise be able to learn from it, but it actually helps all learners. -->
 Some ways I incorporate universal design in my workshops include:
 
 - set clear expectations at the beginning and offer suggestions for how best to make use of the workshop
@@ -80,9 +81,9 @@ Some ways I incorporate universal design in my workshops include:
 <!-- makes it easier for folks using accessibility software like text to speech or translation -->
 - slide numbers on every slide, and slide deck available along with data and code
 
-<!-- I'm always listening for new ideas to make my materials more accesible. The thing about slide numbers came up when a student asked me years ago if I could add slide numbers, to make it easier for her to take notes. -->
+<!-- Folks often know how best to set themselves up for success, and they'll do it fi you just provide the flexibility to accommodate a range of styles. If you guve them the tools, they'll do whatever works best for them, which is perfect. -->
 
-I encourage learners to follow along and run code themselves, either in their own R Studio (workshop files available on my github), or at rstudio.cloud.
+*Practical Considerations:* I encourage learners to follow along and run code themselves, either in their own R Studio, or at rstudio.cloud.
 The best way to learn R is by using R!
 For those of you who are R folks: I steer learners toward the R Studio environment, `tidyverse` packages, and R-markdown, using the `rticles` package for creating manuscripts.
 
@@ -93,7 +94,7 @@ For those of you who are cognitive science geeks:
 - realistic practice problems from the two perspectives learners are most likely to encounter in real life
 <!-- I have an idea in my head and I need to turn it into code, and I've got some code here and I need to figure out what it does. -->
 - consistent color-coding of different types of information
-<!-- I use consistent color-coding of different types of information throughout to help learners allocate their attention in support of their learning goals, and to facilitate appropriate comparison across situations. -->
+<!--  throughout to help learners allocate their attention in support of their learning goals, and to facilitate appropriate comparison across situations. -->
 
 \hwydt{ }
 \wwtd{ }
